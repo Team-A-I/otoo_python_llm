@@ -1,0 +1,81 @@
+# Conflict_module.py
+
+import os
+from dotenv import load_dotenv
+from openai import OpenAI
+
+# 환경 변수 로드
+load_dotenv()
+
+# OpenAI 클라이언트 초기화
+client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+
+def get_chatgpt_response(messages):
+    format = """
+            {
+            "wrong_percentage": {
+                "name1": num,
+                "name2": num
+            },
+            "conflict_cause_percentage": {
+                "cause1": num,
+                "cause2": num,
+                "cause3": num,
+                "cause4": num,
+                "cause5": num,
+            },
+
+            "mbti_tendency_percentage": {
+                "name1": num,
+                "name2": num,
+            },
+
+            "offended_percentage": {
+                "name1": num,
+                "name2": num
+            },
+            "tactless_percentage": {
+                "name1": num,
+                "name2": num
+            },
+            "priority_keywords": {
+                "name1": ["keywords1", "keywords2", "keywords3", "keywords4", "keywords5"],
+                "name2": ["keywords1", "keywords2", "keywords3", "keywords4", "keywords5"]
+            },
+            "conflict_resolution_advice": {
+                "very_lively_and_positive_personality": str,
+                "very_hot_and_straightforward_personality": str,
+                "very_timid_sad_and_hesitant_personality": str
+            }
+            }"""
+    
+    system_prompt = f"""
+                    "##Order
+                    You have to give me the answer I want from the given text. 1. Indicate in % who is at fault in this altercation. 
+                    2. In the conversation between the two, show the cause of the conflict in %.
+                    3. Indicate in % who is more MBTI 'T' sullen, who is more offended, and who is more tactless. 
+                    Additionally, provide a one-sentence explanation for each result.
+                    4. In the conversation, show the Top 5 with a simple word keyword what the priorities each think of.
+                    5. How to resolve the conflict between two people:
+                    5-1. The 'very lively and positive personality' character gives pleasant and funny advice. Please answer in detail and make the advice longer.
+                    5-2. The character in 'a very hot and straightforward personality' gives impulsive and clear advice, but speaks like a cursing grandfather. Please elaborate and make the advice longer.
+                    5-3. The 'very timid, sad and hesitant' character gives vague advice from a neutral standpoint. Please provide a longer and more detailed explanation. Please answer in Korean.
+
+                    
+                    ##Format
+                    {format}
+                    """
+    
+    user_input = "\n".join([message["text"] for message in messages])
+    
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content":  user_input}
+        ],
+        max_tokens=3000,
+        temperature=0.8
+    )
+    
+    return response.choices[0].message.content.strip()
