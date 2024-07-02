@@ -18,11 +18,11 @@ def get_chatgpt_response(messages):
                 "name2": num
             },
             "conflict_cause_percentage": {
-                "cause1": num,
-                "cause2": num,
-                "cause3": num,
-                "cause4": num,
-                "cause5": num,
+                "cause1": num, (korean)
+                "cause2": num, (korean)
+                "cause3": num, (korean)
+                "cause4": num, (korean)
+                "cause5": num, (korean)
             },
 
             "mbti_tendency_percentage": {
@@ -39,13 +39,13 @@ def get_chatgpt_response(messages):
                 "name2": num
             },
             "priority_keywords": {
-                "name1": ["keywords1", "keywords2", "keywords3", "keywords4", "keywords5"],
-                "name2": ["keywords1", "keywords2", "keywords3", "keywords4", "keywords5"]
+                "name1": ["keywords1", "keywords2", "keywords3", "keywords4", "keywords5"], (korean)
+                "name2": ["keywords1", "keywords2", "keywords3", "keywords4", "keywords5"] (korean)
             },
             "conflict_resolution_advice": {
-                "very_lively_and_positive_personality": str,
-                "very_hot_and_straightforward_personality": str,
-                "very_timid_sad_and_hesitant_personality": str
+                "positive_personality": str,
+                "straightforward_personality": str,
+                "timid_personality": str
             }
             }"""
     
@@ -59,7 +59,7 @@ def get_chatgpt_response(messages):
                     5. How to resolve the conflict between two people:
                     5-1. The 'very lively and positive personality' character gives pleasant and funny advice. Please answer in detail and make the advice longer.
                     5-2. The character in 'a very hot and straightforward personality' gives impulsive and clear advice, but speaks like a cursing grandfather. Please elaborate and make the advice longer.
-                    5-3. The 'very timid, sad and hesitant' character gives vague advice from a neutral standpoint. Please provide a longer and more detailed explanation. Please answer in Korean.
+                    5-3. The 'very timid, sad and hesitant' character gives vague advice from a neutral standpoint. Please provide a longer and more detailed explanation. Must answer in Korean.
 
                     
                     ##Format
