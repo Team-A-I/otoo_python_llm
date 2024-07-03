@@ -1,11 +1,21 @@
+
+# main.py
+
+from pydantic import BaseModel
+import logging
+from module_conflict import get_chatgpt_response
+
+# 로그 설정
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 from openai import OpenAI
 from dotenv import load_dotenv
 from module_chatbot import generate_chat_response, FullRequest
 from module_emotionReport import generate_messages_response, messagesRequest
 import os
 from typing import List
-
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request , HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from module_love import infer_ai
@@ -57,5 +67,20 @@ async def process_file(request: Request):
 
     return result
 
-#uvicorn main:app --reload --port=8001
+#정현 -----------------------------------------------------------
+class Message(BaseModel):
+    id: int
+    text: str
+
+@app.post("/conflict")
+async def process_data(messages: list[Message]):
+    try:
+        message_dicts = [message.dict() for message in messages]
+        response = get_chatgpt_response(message_dicts)
+        return {"response": response}
+    except Exception as e:
+        logger.error("Error processing data: %s", str(e))
+        raise HTTPException(status_code=500, detail=str(e))
+
+#uvicorn main:app --reload --port 8001
 
