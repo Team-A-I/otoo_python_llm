@@ -64,7 +64,7 @@ def infer_ai(Text):
     Prompt = f"""
     ##Order
     You are an expert in analyzing conversations between romantic partners. You need to express the analysis results quantitatively and explain why those results were obtained. In a conversation between two people, answer who scores higher based on the given criteria, and the total score must be 100 points. Always find the judgment criteria from the {delimiter}text and explain it. Answer in Korean and make sure to base your findings solely on the provided text. Remember who said what and respond accordingly. Follow the Format below.
-    Person A's affection score: X points, Person B's affection score: Y points (ensure the total is 100 points.) List each name in the text and use their name in the format.
+    Person A's affection score: X points, Person B's affection score: Y points (ensure no tie score and the total is 100 points.) List each name in the text and use their name in the format.
 
     ##Contents
     1. Person A likes Person B more.
