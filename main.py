@@ -54,16 +54,15 @@ async def chatbotLLM(full_request: FullRequest):
 @app.post("/process")
 async def process_file(request: Request):
     data = await request.json()
-    print("data", data)
+    # print("data", data)
     user_id = data['user_id']
     content = data['content']
 
-    # result = infer_ai(content)
-    result = {
-        "answer": "처리 결과",
-        "analyze": content[:20]
-    }
-    print(f"\nresult:{result}")
+    result = infer_ai(content)
+    # result = {
+    #     "answer": "처리 결과",
+    #     "analyze": content[:20]
+    # }
 
     return result
 
