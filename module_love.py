@@ -71,7 +71,7 @@ def infer_ai(Text):
     2. Who is more considerate? (Ensure the total is 100 points).
     3. Who is more likely to cheat in the future? (Ensure the total is 100 points).
     4. Who is more sexually attracted to the other person? (Ensure the total is 100 points).
-    5. What are each person's interests? (Extract 3 nouns each).
+    5. What are each person's interests? (Extract 5 nouns for each person, ensuring that the first noun is the other person's name and the second noun is their own name).
 
     ##Format json
     {format}
@@ -80,7 +80,7 @@ def infer_ai(Text):
     messages = [{'role': 'system', 'content': Prompt},
                 {'role': 'user', 'content': f'{delimiter}{Text}.'}]
 
-    print(f"\nmessages here:{messages}")
+    # print(f"\nmessages here:{messages}")
 
     chat = client.chat.completions.create(
         model="gpt-4o-2024-05-13",
