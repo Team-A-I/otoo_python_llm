@@ -1,16 +1,7 @@
 # Conflict_module.py
+from module_pre import clean_chat
 
-import os
-from dotenv import load_dotenv
-from openai import OpenAI
-
-# 환경 변수 로드
-load_dotenv()
-
-# OpenAI 클라이언트 초기화
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
-
-def get_chatgpt_response(messages):
+def get_chatgpt_response(client, messages):
     format = """
             {
             "wrong_percentage": {
@@ -67,7 +58,10 @@ def get_chatgpt_response(messages):
                     """
     
     user_input = "\n".join([message["text"] for message in messages])
-    
+    # 데이터 전처리 적용하고 싶으면 하기!
+    # clean_v = clean_chat(user_input)
+    # print(f"clean_v : {clean_v}")
+
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[

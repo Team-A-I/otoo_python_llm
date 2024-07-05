@@ -1,21 +1,7 @@
-import pandas as pd
-import os
-import time, random
-from dotenv import load_dotenv
-import re
 import json
-from openai import OpenAI
-
-# 데이터 입력
-
-## chat-GPT활용
-load_dotenv()
-client = OpenAI(
-    api_key=os.getenv("OPENAI_API_KEY")
-)
 
 ##프롬프트 입력해서 GPT돌리기
-def infer_ai(Text):
+def infer_ai(client, Text):
     delimiter = "####"
 
     format = """ 
