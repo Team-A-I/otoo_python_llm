@@ -68,15 +68,13 @@ async def process_file(request: Request):
     return result
 
 #정현 -----------------------------------------------------------
-class Message(BaseModel):
-    id: int
+class TextMessage(BaseModel):
     text: str
 
 @app.post("/conflict")
-async def process_data(messages: list[Message]):
+async def process_data(message: TextMessage):
     try:
-        message_dicts = [message.dict() for message in messages]
-        response = get_chatgpt_response(message_dicts)
+        response = get_chatgpt_response(message.text)
         return {"response": response}
     except Exception as e:
         logger.error("Error processing data: %s", str(e))

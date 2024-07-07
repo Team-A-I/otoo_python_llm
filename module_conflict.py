@@ -1,16 +1,12 @@
-# Conflict_module.py
-
 import os
 from dotenv import load_dotenv
 from openai import OpenAI
 
-# 환경 변수 로드
 load_dotenv()
 
-# OpenAI 클라이언트 초기화
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
-def get_chatgpt_response(messages):
+def get_chatgpt_response(text):
     format = """
             {
             "wrong_percentage": {
@@ -66,13 +62,11 @@ def get_chatgpt_response(messages):
                     {format}
                     """
     
-    user_input = "\n".join([message["text"] for message in messages])
-    
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content":  user_input}
+            {"role": "user", "content":  text}
         ],
         max_tokens=3000,
         temperature=0.8
