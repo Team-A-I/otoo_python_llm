@@ -7,6 +7,6 @@ from modules.module_emotionReport import messagesRequest, generate_messages_resp
 router = APIRouter()
 
 @router.post("/emotionReport")
-async def emotionReportLLM(messages_request: messagesRequest, model: EmotionReportModel = Depends(get_emotion_report_model)):
+def emotionReportLLM(messages_request: messagesRequest, model: EmotionReportModel = Depends(get_emotion_report_model)):
     response = generate_messages_response(model, messages_request)
     return response

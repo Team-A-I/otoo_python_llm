@@ -14,7 +14,7 @@ class EmotionReportModel:
         self.client = OpenAI(api_key=api_key)
         self.model_name = get_model_name()
 
-    def generate_messages_response(self, messages_request):
+    async def generate_messages_response(self, messages_request):
         messages = messages_request.messages
         
         messages = [
@@ -29,7 +29,7 @@ class EmotionReportModel:
         ]
         
         try:
-            completion = self.client.chat.completions.create(
+            completion = await self.client.chat.completions.create(
                 model=self.model_name,
                 messages=messages,
                 temperature=1,
