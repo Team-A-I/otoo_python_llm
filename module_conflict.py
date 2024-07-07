@@ -73,3 +73,7 @@ def get_chatgpt_response(text):
     )
     
     return response.choices[0].message.content.strip()
+
+    # 데이터 전처리 적용하고 싶으면 하기!
+    # clean_v = clean_chat(user_input)
+    # print(f"clean_v : {clean_v}")

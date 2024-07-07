@@ -12,7 +12,9 @@ def generate_messages_response(client, messages_request: messagesRequest) -> str
                 2. the recipient is the person who made the user feel hurt. 
                 3. The sender of the kakaotalk message is the user. 
                 4. Respond in Korean. 
-                5. Just show the KakaoTalk message as the result only
+                5. Just show the message as the result only
+                6. Don't put special texts, recipients, senders
+                7. Don't add names to the result
                 """
     
     messages = [

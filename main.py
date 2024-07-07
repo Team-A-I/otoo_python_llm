@@ -1,24 +1,21 @@
-
-# main.py
-
+import os
+from typing import List
+from fastapi import FastAPI, Request , HTTPException, File, UploadFile
+from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+from openai import OpenAI
+from dotenv import load_dotenv
 from pydantic import BaseModel
 import logging
 from module_conflict import get_chatgpt_response
+from module_pre import clean_chat
+from module_love import infer_ai
+from module_chatbot import generate_chat_response, FullRequest
+from module_emotionReport import generate_messages_response, messagesRequest
 
 # 로그 설정
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-from openai import OpenAI
-from dotenv import load_dotenv
-from module_chatbot import generate_chat_response, FullRequest
-from module_emotionReport import generate_messages_response, messagesRequest
-import os
-from typing import List
-from fastapi import FastAPI, Request , HTTPException
-from fastapi.responses import JSONResponse
-from fastapi.middleware.cors import CORSMiddleware
-from module_love import infer_ai
 
 
 app = FastAPI()
@@ -34,6 +31,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+#현석 chatbot---------------------------------------------------------
 @app.post("/emotionReport")
 async def emotionReportLLM(messages_request: messagesRequest):
     response = generate_messages_response(client, messages_request)
@@ -46,17 +44,18 @@ async def chatbotLLM(full_request: FullRequest):
     response = generate_chat_response(client, mode_request, recent_messages_request)
     return response
 
-# @app.post("/love")
-# async def read_fastapi(text: str = Form()):
-#     result = infer_ai(text)
-#     return result
-
-@app.post("/process")
+#회은 love---------------------------------------------------------
+@app.post("/love")
 async def process_file(request: Request):
-    data = await request.json()
-    print("data", data)
-    user_id = data['user_id']
-    content = data['content']
+    try:
+        data = await request.json()
+        user_id = data['user_id']
+        content = clean_chat(data['content'])
+        result = infer_ai(client, content)
+        return result
+    except Exception as e:
+        logger.error("Error processing data: %s", str(e))
+        raise HTTPException(status_code=500, detail=str(e))
 
     # result = infer_ai(content)
     result = {
