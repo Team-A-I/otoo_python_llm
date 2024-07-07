@@ -57,16 +57,23 @@ async def process_file(request: Request):
         logger.error("Error processing data: %s", str(e))
         raise HTTPException(status_code=500, detail=str(e))
 
-#정현 conflict---------------------------------------------------------
-class Message(BaseModel):
-    id: int
+    # result = infer_ai(content)
+    result = {
+        "answer": "처리 결과",
+        "analyze": content[:20]
+    }
+    print(f"\nresult:{result}")
+
+    return result
+
+#정현 -----------------------------------------------------------
+class TextMessage(BaseModel):
     text: str
 
 @app.post("/conflict")
-async def process_data(messages: list[Message]):
+async def process_data(message: TextMessage):
     try:
-        message_dicts = [message.dict() for message in messages]
-        response = get_chatgpt_response(client, message_dicts)
+        response = get_chatgpt_response(message.text)
         return {"response": response}
     except Exception as e:
         logger.error("Error processing data: %s", str(e))
