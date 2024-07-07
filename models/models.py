@@ -4,7 +4,8 @@ import os
 from dotenv import load_dotenv
 import json
 from fastapi import HTTPException
-from prompts import (emotion_report_prompt, chatbot_prompt_mode_2, 
+
+from prompts.prompts import (emotion_report_prompt, chatbot_prompt_mode_2, 
                      chatbot_prompt_default, conflict_prompt, love_prompt)
 
 load_dotenv()
@@ -142,3 +143,15 @@ emotion_report_model = EmotionReportModel(api_key=api_key)
 chatbot_model = ChatbotModel(api_key=api_key)
 conflict_model = ConflictModel(api_key=api_key)
 love_model = LoveModel(api_key=api_key)
+
+def get_emotion_report_model():
+    return emotion_report_model
+
+def get_chatbot_model():
+    return chatbot_model
+
+def get_conflict_model():
+    return conflict_model
+
+def get_love_model():
+    return love_model
