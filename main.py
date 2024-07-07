@@ -1,83 +1,31 @@
-import os
-from typing import List
-from fastapi import FastAPI, Request , HTTPException, File, UploadFile
-from fastapi.responses import JSONResponse
+# main.py
+
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from openai import OpenAI
-from dotenv import load_dotenv
-from pydantic import BaseModel
 import logging
-from module_conflict import get_chatgpt_response
-from module_pre import clean_chat
-from module_love import infer_ai
-from module_chatbot import generate_chat_response, FullRequest
-from module_emotionReport import generate_messages_response, messagesRequest
+from api.emotion_report_router import router as emotion_report_router
+from api.chatbot_router import router as chatbot_router
+from api.conflict_router import router as conflict_router
+from api.love_router import router as love_router
 
 # 로그 설정
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 app = FastAPI()
-load_dotenv()
-api_key = os.getenv("OPENAI_API_KEY")
-client = OpenAI(api_key=api_key)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # React 앱의 주소
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-#현석 chatbot---------------------------------------------------------
-@app.post("/emotionReport")
-async def emotionReportLLM(messages_request: messagesRequest):
-    response = generate_messages_response(client, messages_request)
-    return response
+# 라우터 등록  prefix="/api"
+app.include_router(emotion_report_router)
+app.include_router(chatbot_router)
+app.include_router(conflict_router)
+app.include_router(love_router)
 
-@app.post("/chatbot")
-async def chatbotLLM(full_request: FullRequest):
-    mode_request = full_request.mode_request
-    recent_messages_request = full_request.recent_messages_request
-    response = generate_chat_response(client, mode_request, recent_messages_request)
-    return response
-
-#회은 love---------------------------------------------------------
-@app.post("/love")
-async def process_file(request: Request):
-    try:
-        data = await request.json()
-        user_id = data['user_id']
-        content = clean_chat(data['content'])
-        result = infer_ai(client, content)
-        return result
-    except Exception as e:
-        logger.error("Error processing data: %s", str(e))
-        raise HTTPException(status_code=500, detail=str(e))
-
-    # result = infer_ai(content)
-    result = {
-        "answer": "처리 결과",
-        "analyze": content[:20]
-    }
-    print(f"\nresult:{result}")
-
-    return result
-
-#정현 -----------------------------------------------------------
-class TextMessage(BaseModel):
-    text: str
-
-@app.post("/conflict")
-async def process_data(message: TextMessage):
-    try:
-        response = get_chatgpt_response(message.text)
-        return {"response": response}
-    except Exception as e:
-        logger.error("Error processing data: %s", str(e))
-        raise HTTPException(status_code=500, detail=str(e))
-
-#uvicorn main:app --reload --port 8001
-
+# uvicorn main:app --reload --port 8001
