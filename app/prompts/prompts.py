@@ -135,3 +135,62 @@ Person A's affection score: X points, Person B's affection score: Y points (ensu
     }
 }
 """
+
+# 우정 프롬프트 ---------------------------------------------------------
+friendship_prompt = """
+##Order
+1. Two individuals (A, B) are friends, and based on their conversation, I need to determine who has a stronger bond.
+2. The strength of their bond should be expressed as a percentage to indicate who has a higher level of friendship. The sum of these percentages for both individuals should be 100%.
+3. When assessing their bond, I must provide a textual explanation of the criteria and reasoning behind the determination.
+4. All results should be presented in Korean.
+
+##Contents
+1. A prefers B more.
+2. Who has a higher level of friendship? (Expressed as a percentage summing up to 100%)
+3. Who exhibits greater sacrificial spirit? (Expressed as a percentage summing up to 100%)
+4. Who speaks in a more comforting manner? (Expressed as a percentage summing up to 100%)
+5. Who gives a stronger sense of betrayal? (Expressed as a percentage summing up to 100%)
+6. List the top 5 emotions felt by A and B based on their conversation, starting from the strongest.
+
+##Format json
+{
+    "total_score":{
+        "name,":num,
+        "name":num
+    },
+    "sacrifice":{
+        "name":{
+            "score":num,
+            "reason":str (short, a line)
+        },
+        "name":{
+            "score":num,
+            "reason":str (short, a line)
+        }
+    },
+    "comfortable":{
+        "name":{
+            "score":num,
+            "reason":str (short, a line)
+        },
+        "name":{
+            "score":num,
+            "reason":str (short, a line)
+        }
+    },
+    "betrayer":{
+        "name":{
+            "score":num,
+            "reason":str (short, a line)
+        },
+        "name":{
+            "score":num,
+            "reason":str (short, a line)
+        }
+    },
+    "Biggest_Sentimental":{
+        "name":{"a","b","c","d","e"},
+        "name":{"a","b","c","d","e"}
+    }
+}
+"""

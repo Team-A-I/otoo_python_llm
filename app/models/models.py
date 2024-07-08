@@ -2,7 +2,7 @@ from openai import OpenAI
 import os
 from fastapi import HTTPException
 from db.db_util import get_model_name
-from prompts.prompts import conflict_prompt, love_prompt, emotion_report_prompt, chatbot_prompt_mode_2, chatbot_prompt_default
+from prompts.prompts import conflict_prompt, love_prompt, friendship_prompt, emotion_report_prompt, chatbot_prompt_mode_2, chatbot_prompt_default
 
 api_key = os.getenv('OPENAI_API_KEY')
 
@@ -73,6 +73,8 @@ class AnalysisModel:
             prompt = conflict_prompt
         elif analysis_type == 'love':
             prompt = love_prompt
+        elif analysis_type == 'friendship':
+            prompt = friendship_prompt
         else:
             raise HTTPException(status_code=400, detail="Invalid analysis type")
 
