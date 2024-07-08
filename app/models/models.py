@@ -11,12 +11,20 @@ class EmotionReportModel:
         self.client = OpenAI(api_key=api_key)
         self.model_name = get_model_name()
 
-    def generate_messages_response(self, text):
+    def generate_messages_response(self, messages_request):
+        messages = messages_request.messages
+        
         messages = [
-            {"role": "system", "content": emotion_report_prompt},
-            {"role": "user", "content": text}
+            {
+                "role": "system",
+                "content": emotion_report_prompt
+            },
+            {
+                "role": "user",
+                "content": messages
+            }
         ]
-
+        
         try:
             completion = self.client.chat.completions.create(
                 model=self.model_name,
@@ -30,23 +38,42 @@ class EmotionReportModel:
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error calling OpenAI API: {str(e)}")
 
-        return completion.choices[0].message.content.strip()
+        content_value = completion.choices[0].message.content
+        return content_value
 
 class ChatbotModel:
     def __init__(self, api_key):
         self.client = OpenAI(api_key=api_key)
         self.model_name = get_model_name()
 
-    def generate_chat_response(self, mode, recent_messages):
+    def generate_chat_response(self, mode_request, recent_messages_request):
+        recent_messages = recent_messages_request.RecentMessages
+        mode = mode_request.mode
+        
         if mode == '2':
             prompt = chatbot_prompt_mode_2
         else:
             prompt = chatbot_prompt_default
 
-        messages = [{"role": "system", "content": prompt}]
+        messages = [
+            {
+                "role": "system",
+                "content": prompt
+            }
+        ]
+
         for message in recent_messages:
             role, content = message.split(" : ", 1)
-            messages.append({"role": role, "content": content})
+            if role == 'user':
+                messages.append({
+                    "role": "user",
+                    "content": content
+                })
+            elif role == 'assistant':
+                messages.append({
+                    "role": "assistant",
+                    "content": content
+                })
 
         try:
             completion = self.client.chat.completions.create(
@@ -60,9 +87,9 @@ class ChatbotModel:
             )
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error calling OpenAI API: {str(e)}")
-
-        return completion.choices[0].message.content.strip()
-
+        content_value = completion.choices[0].message.content
+        return content_value
+    
 class AnalysisModel:
     def __init__(self, api_key):
         self.client = OpenAI(api_key=api_key)
