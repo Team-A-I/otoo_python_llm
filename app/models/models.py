@@ -3,15 +3,16 @@ import os
 from fastapi import HTTPException
 from db.db_util import get_model_name
 from prompts.prompts import conflict_prompt, love_prompt, friendship_prompt, emotion_report_prompt, chatbot_prompt_mode_2, chatbot_prompt_default
+from openai import AsyncOpenAI
 
 api_key = os.getenv('OPENAI_API_KEY')
 
 class EmotionReportModel:
     def __init__(self, api_key):
-        self.client = OpenAI(api_key=api_key)
+        self.client = AsyncOpenAI(api_key=api_key)
         self.model_name = get_model_name()
 
-    def generate_messages_response(self, messages_request):
+    async def generate_messages_response(self, messages_request):
         messages = messages_request.messages
         
         messages = [
@@ -26,7 +27,7 @@ class EmotionReportModel:
         ]
         
         try:
-            completion = self.client.chat.completions.create(
+            completion = await self.client.chat.completions.create(
                 model=self.model_name,
                 messages=messages,
                 temperature=1,
@@ -43,10 +44,10 @@ class EmotionReportModel:
 
 class ChatbotModel:
     def __init__(self, api_key):
-        self.client = OpenAI(api_key=api_key)
+        self.client = AsyncOpenAI(api_key=api_key)
         self.model_name = get_model_name()
 
-    def generate_chat_response(self, mode_request, recent_messages_request):
+    async def generate_chat_response(self, mode_request, recent_messages_request):
         recent_messages = recent_messages_request.RecentMessages
         mode = mode_request.mode
         
@@ -76,7 +77,7 @@ class ChatbotModel:
                 })
 
         try:
-            completion = self.client.chat.completions.create(
+            completion = await self.client.chat.completions.create(
                 model=self.model_name,
                 messages=messages,
                 temperature=0.6,
@@ -92,10 +93,10 @@ class ChatbotModel:
     
 class AnalysisModel:
     def __init__(self, api_key):
-        self.client = OpenAI(api_key=api_key)
+        self.client = AsyncOpenAI(api_key=api_key)
         self.model_name = get_model_name()
 
-    def analyze(self, text, analysis_type):
+    async def analyze(self, text, analysis_type):
         if analysis_type == 'conflict':
             prompt = conflict_prompt
         elif analysis_type == 'love':
@@ -110,7 +111,7 @@ class AnalysisModel:
             {"role": "user", "content": text}
         ]
 
-        response = self.client.chat.completions.create(
+        response = await self.client.chat.completions.create(
             model=self.model_name,
             messages=messages,
             temperature=0.7
