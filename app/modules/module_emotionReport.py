@@ -1,7 +1,8 @@
+from fastapi import HTTPException
 from pydantic import BaseModel
 
-class EmotionReportRequest(BaseModel):
-    text: str
+class messagesRequest(BaseModel):
+    messages: str
 
-def generate_messages_response(client, request: EmotionReportRequest) -> str:
-    return client.generate_messages_response(request.text)
+def generate_messages_response(client, messages_request: messagesRequest) -> str:
+    return client.generate_messages_response(messages_request)
