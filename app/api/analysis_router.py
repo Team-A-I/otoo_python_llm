@@ -12,7 +12,7 @@ router = APIRouter()
 @router.post("/analyze")
 async def analyze(request: AnalysisRequest, model: AnalysisModel = Depends(get_analysis_model)):
     try:
-        response = analyze_text(model, request.text, request.type)
+        response = await analyze_text(model, request.text, request.type)
         return {"response": response}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
