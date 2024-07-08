@@ -93,10 +93,10 @@ Person A's affection score: X points, Person B's affection score: Y points (ensu
 4. Who is more sexually attracted to the other person? (Ensure the total is 100 points).
 5. What are each person's interests? (Extract 5 nouns for each person, ensuring that the first noun is the other person's name and the second noun is their own name).
 
-##Format json
+##Format
 {
     "total_score":{
-        "name,":num,
+        "name":num,
         "name":num
     },
     "support":{
@@ -107,7 +107,7 @@ Person A's affection score: X points, Person B's affection score: Y points (ensu
         "name":{
             "score":num,
             "reason":str (short, a line)
-        }
+        },
     },
     "cheat":{
         "name":{
@@ -117,7 +117,7 @@ Person A's affection score: X points, Person B's affection score: Y points (ensu
         "name":{
             "score":num,
             "reason":str (short, a line)
-        }
+        },
     },
     "sexual":{
         "name":{
@@ -127,11 +127,11 @@ Person A's affection score: X points, Person B's affection score: Y points (ensu
         "name":{
             "score":num,
             "reason":str (short, a line)
-        }
+        },
     },
     "interest":{
-        "name":{"a","b","c"},
-        "name":{"a","b","c"}
+        "name":["a","b","c"],
+        "name":["a","b","c"]
     }
 }
 """
