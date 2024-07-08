@@ -5,7 +5,8 @@ import json
 from fastapi import HTTPException
 from db.db_util import get_model_name
 from prompts.prompts import (emotion_report_prompt, chatbot_prompt_mode_2, 
-                     chatbot_prompt_default, conflict_prompt, love_prompt)
+                     chatbot_prompt_default, conflict_prompt, love_prompt,
+                     friendship_prompt)
 
 api_key = os.getenv('OPENAI_API_KEY')
 
@@ -140,10 +141,30 @@ class LoveModel:
 
         return result
 
+class FriendshipModel:
+    def __init__(self, api_key):
+        self.client = OpenAI(api_key=api_key)
+        self.model_name = get_model_name()
+
+    def get_friendship_response(self, text):
+        messages = [
+                {"role": "system", "content": friendship_prompt},
+                {"role": "user", "content":  text}
+            ]
+        
+        response = self.client.chat.completions.create(
+            model=self.model_name,
+            messages=messages,
+            temperature=0.8
+        )
+        
+        return response.choices[0].message.content.strip()
+
 emotion_report_model = EmotionReportModel(api_key=api_key)
 chatbot_model = ChatbotModel(api_key=api_key)
 conflict_model = ConflictModel(api_key=api_key)
 love_model = LoveModel(api_key=api_key)
+friendship_model = FriendshipModel(api_key=api_key)
 
 def get_emotion_report_model():
     return emotion_report_model
@@ -156,3 +177,6 @@ def get_conflict_model():
 
 def get_love_model():
     return love_model
+
+def get_friendship_model():
+    return friendship_model
