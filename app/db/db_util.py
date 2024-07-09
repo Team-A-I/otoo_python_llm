@@ -1,14 +1,15 @@
 # db_util.py
 import mysql.connector
 from mysql.connector import Error
+import os
 
 def get_db_connection():
     try:
         connection = mysql.connector.connect(
-            host='host.docker.internal',
-            database='otoo_db',
-            user='otoo',
-            password='1234'
+            host=os.getenv('DB_HOST'),
+            database=os.getenv('DB_NAME'),
+            user=os.getenv('DB_USER'),
+            password=os.getenv('DB_PASSWORD')
         )
         if connection.is_connected():
             return connection
