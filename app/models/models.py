@@ -6,7 +6,6 @@ from prompts.prompts import conflict_prompt, love_prompt, friendship_prompt, emo
 from openai import AsyncOpenAI
 
 api_key = os.getenv('OPENAI_API_KEY')
-print(api_key)
 
 class EmotionReportModel:
     def __init__(self, api_key):
