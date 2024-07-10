@@ -44,7 +44,7 @@ Additionally, provide a one-sentence explanation for each result.
 
 ##Format
 {
-    "wrong_percentage": {
+    "total_score": {
         "name1": num,
         "name2": num
     },

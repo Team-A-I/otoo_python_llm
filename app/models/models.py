@@ -4,8 +4,11 @@ from fastapi import HTTPException
 from db.db_util import get_model_name
 from prompts.prompts import conflict_prompt, love_prompt, friendship_prompt, emotion_report_prompt, chatbot_prompt_mode_2, chatbot_prompt_default
 from openai import AsyncOpenAI
+from dotenv import load_dotenv
 
+load_dotenv()
 api_key = os.getenv('OPENAI_API_KEY')
+print(api_key)
 
 class EmotionReportModel:
     def __init__(self, api_key):

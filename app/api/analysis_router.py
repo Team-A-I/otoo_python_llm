@@ -7,7 +7,7 @@ from modules.module_analysis import analyze_text
 
 class AnalysisRequest(BaseModel):
     text: str
-    type: str  # 'conflict' 또는 'love'
+    type: str  # 'conflict' 또는 'love' 또는 'friendship'
 
 # 로거 설정
 logger = logging.getLogger(__name__)
