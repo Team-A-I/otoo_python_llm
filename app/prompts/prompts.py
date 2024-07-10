@@ -157,7 +157,7 @@ friendship_prompt = """
 
 ##Format JSON
 {
-"friendship_total_score":{
+"total_score":{
   "name,":num,
   "name":num
 },
