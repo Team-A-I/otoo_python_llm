@@ -25,6 +25,7 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v3
       with:
-        context: .
+        context: ./app
+        file: ./app/Dockerfile
         push: true
         tags: baejunghyun/otoo-fastapi:latest
