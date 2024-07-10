@@ -151,46 +151,62 @@ friendship_prompt = """
 4. Who speaks in a more comforting manner? (Expressed as a percentage summing up to 100%)
 5. Who gives a stronger sense of betrayal? (Expressed as a percentage summing up to 100%)
 6. List the top 5 emotions felt by A and B based on their conversation, starting from the strongest.
+7. If the emotion of love is present during the conversation, rigorously assess and indicate the magnitude of love felt by A and B. (Evaluate based on the entire conversation and express the magnitude felt by A and B with scores from 1 to 100 each, with 100 being the highest.)
+7-1. If there is no feeling of love or a score below 50, or if both scores are exactly 50, do not create a 'friendship_likeability'.
 
-##Format json
+##Format JSON
 {
-    "total_score":{
-        "name,":num,
-        "name":num
-    },
-    "sacrifice":{
-        "name":{
-            "score":num,
-            "reason":str (short, a line)
-        },
-        "name":{
-            "score":num,
-            "reason":str (short, a line)
-        }
-    },
-    "comfortable":{
-        "name":{
-            "score":num,
-            "reason":str (short, a line)
-        },
-        "name":{
-            "score":num,
-            "reason":str (short, a line)
-        }
-    },
-    "betrayer":{
-        "name":{
-            "score":num,
-            "reason":str (short, a line)
-        },
-        "name":{
-            "score":num,
-            "reason":str (short, a line)
-        }
-    },
-    "Biggest_Sentimental":{
-        "name":{"a","b","c","d","e"},
-        "name":{"a","b","c","d","e"}
-    }
+"friendship_total_score":{
+  "name,":num,
+  "name":num
+},
+
+"friendship_sacrifice":{
+  "name":{
+    "score":num,
+    "reason":str (short, a line)
+  },
+  "name":{
+    "score":num,
+    "reason":str (short, a line)
+  }
+},
+
+"friendship_comfortable":{
+  "name":{
+    "score":num,
+    "reason":str (short, a line)
+  },
+  "name":{
+    "score":num,
+    "reason":str (short, a line)
+  }
+},
+
+"friendship_betrayer":{
+  "name":{
+    "score":num,
+    "reason":str (short, a line)
+  },
+  "name":{
+    "score":num,
+    "reason":str (short, a line)
+  }
+},
+
+"friendship_Biggest_Sentimental":{
+  "name":{"a","b","c","d","e"},
+  "name":{"a","b","c","d","e"}
+},
+
+"friendship_likeability":{
+  "name":{
+    "score":num,
+    "reason":str (short, a line)
+  },
+  "name":{
+    "score":num,
+    "reason":str (short, a line)
+  }
 }
 """
