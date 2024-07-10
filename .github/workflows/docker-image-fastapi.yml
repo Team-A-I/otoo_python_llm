@@ -1,4 +1,4 @@
-name: Build and Push Docker Image for FastAPI
+name: Build and Push Docker Image for RestAPI
 
 on:
   push:
@@ -13,6 +13,35 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Set up JDK 17
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Set environment variables
+      run: |
+        echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> $GITHUB_ENV
+        echo "OAUTH_KAKAO_CLIENT_ID=${{ secrets.OAUTH_KAKAO_CLIENT_ID }}" >> $GITHUB_ENV
+        echo "OAUTH_NAVER_CLIENT_ID=${{ secrets.OAUTH_NAVER_CLIENT_ID }}" >> $GITHUB_ENV
+        echo "OAUTH_NAVER_CLIENT_SECRET=${{ secrets.OAUTH_NAVER_CLIENT_SECRET }}" >> $GITHUB_ENV
+        echo "OAUTH_GOOGLE_CLIENT_ID=${{ secrets.OAUTH_GOOGLE_CLIENT_ID }}" >> $GITHUB_ENV
+        echo "OAUTH_GOOGLE_CLIENT_SECRET=${{ secrets.OAUTH_GOOGLE_CLIENT_SECRET }}" >> $GITHUB_ENV
+        echo "SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }}" >> $GITHUB_ENV
+        echo "SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }}" >> $GITHUB_ENV
+        echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}" >> $GITHUB_ENV
+        echo "SPRING_MAIL_USERNAME=${{ secrets.SPRING_MAIL_USERNAME }}" >> $GITHUB_ENV
+        echo "SPRING_MAIL_PASSWORD=${{ secrets.SPRING_MAIL_PASSWORD }}" >> $GITHUB_ENV
+        echo "FASTAPI_URL=${{ secrets.FASTAPI_URL }}" >> $GITHUB_ENV
+        echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> $GITHUB_ENV
+        echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> $GITHUB_ENV
+
+    - name: Build with Gradle
+      run: ./gradlew build
+
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 
@@ -25,7 +54,6 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v3
       with:
-        context: ./app
-        file: ./app/Dockerfile
+        context: .
         push: true
-        tags: baejunghyun/otoo-fastapi:latest
+        tags: baejunghyun/otoo-restapi:latest
