@@ -152,7 +152,8 @@ friendship_prompt = """
 5. Who gives a stronger sense of betrayal? (Expressed as a percentage summing up to 100%)
 6. List the top 5 emotions felt by A and B based on their conversation, starting from the strongest.
 7. If the emotion of love is present during the conversation, rigorously assess and indicate the magnitude of love felt by A and B. (Evaluate based on the entire conversation and express the magnitude felt by A and B with scores from 1 to 100 each, with 100 being the highest.)
-7-1. If there is no feeling of love or a score below 50, or if both scores are exactly 50, do not create a 'friendship_likeability'.
+7-1. If there is no feeling of love or a score below 50, or if both scores are exactly 50, do not create a 'friendship_likeability' and 'friendship_likeability_script'.
+7-2. If you've felt the emotion of love, select five lines from the entire conversation where you felt that emotion, and rank them based on how strongly you experienced the feeling of love.
 
 ##Format JSON
 {
@@ -207,6 +208,11 @@ friendship_prompt = """
   "name":{
     "score":num,
     "reason":str (short, a line)
+  },
+
+"friendship_likeability_script":{
+  "name":{"a","b","c","d","e"},
+  "name":{"a","b","c","d","e"}
   }
 }
 """
