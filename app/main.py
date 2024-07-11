@@ -1,11 +1,13 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 import logging
-
+import os
 from api.emotion_report_router import router as emotion_report_router
 from api.chatbot_router import router as chatbot_router
 from api.analysis_router import router as analysis_router
+from dotenv import load_dotenv
 
+load_dotenv()
 # 로그 설정
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
