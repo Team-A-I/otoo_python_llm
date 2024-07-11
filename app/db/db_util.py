@@ -22,7 +22,7 @@ def get_model_name():
     if connection is None:
         raise Exception("Failed to connect to database")
     cursor = connection.cursor()
-    cursor.execute("SELECT model_name FROM model_config ORDER BY id DESC LIMIT 1")
+    cursor.execute("SELECT model_name FROM model_config ORDER BY model_code DESC LIMIT 1")
     result = cursor.fetchone()
     model_name = result[0] if result else None
     cursor.close()
