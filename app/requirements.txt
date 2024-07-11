@@ -4,7 +4,7 @@ annotated-types==0.7.0
 anthropic==0.30.0
 anyio==4.4.0
 async-timeout==4.0.3
-asyncgpt==1.2.0
+#asyncgpt==1.2.0
 attrs==23.2.0
 Bottleneck==1.3.7
 certifi==2024.6.2
