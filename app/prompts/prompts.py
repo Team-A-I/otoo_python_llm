@@ -42,7 +42,7 @@ Additionally, provide a one-sentence explanation for each result.
 5-2. The character in 'a very hot and straightforward personality' gives impulsive and clear advice, but speaks like a cursing grandfather. Please elaborate and make the advice longer.
 5-3. The 'very timid, sad and hesitant' character gives vague advice from a neutral standpoint. Please provide a longer and more detailed explanation. Must answer in Korean.
 
-##Format
+##Format json
 {
     "total_score": {
         "name1": num,
@@ -93,7 +93,7 @@ Person A's affection score: X points, Person B's affection score: Y points (ensu
 4. Who is more sexually attracted to the other person? (Ensure the total is 100 points).
 5. What are each person's interests? (Extract 5 nouns for each person, ensuring that the first noun is the other person's name and the second noun is their own name).
 
-##Format
+##Format json
 {
     "total_score":{
         "name":num,
@@ -154,7 +154,7 @@ friendship_prompt = """
 7. If the emotion of love is present during the conversation, rigorously assess and indicate the magnitude of love felt by A and B. (Evaluate based on the entire conversation and express the magnitude felt by A and B with scores from 1 to 100 each, with 100 being the highest.)
 7-1. If you've felt the emotion of love, select five lines from the entire conversation where you felt that emotion, and rank them based on how strongly you experienced the feeling of love.
 
-##Format JSON
+##Format json
 {
 "total_score":{
   "name,":num,
