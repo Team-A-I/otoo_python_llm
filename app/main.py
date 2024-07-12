@@ -30,8 +30,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-async def read_root():
+@app.get("/health")
+async def health_check():
     return {"message": "Welcome to FastAPI"}
 
 # 라우터 등록
