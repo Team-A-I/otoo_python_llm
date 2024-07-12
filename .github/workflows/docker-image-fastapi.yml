@@ -9,7 +9,7 @@ env:
   ECR_REPOSITORY: otoo-fastapi-repo
   ECS_SERVICE: otoo-service-fastapi
   ECS_CLUSTER: otoo-cluster
-  ECS_TASK_DEFINITION: fastapi-task-definition.json
+  ECS_TASK_DEFINITION: app/fastapi-task-definition.json
   CONTAINER_NAME: otoo-fastapi
 
 jobs:
