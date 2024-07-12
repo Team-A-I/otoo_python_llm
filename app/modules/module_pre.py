@@ -67,5 +67,6 @@ def clean_chat(data):
                 current_message.append(line.strip())
 
     add_message()  # 메시지 추가
-
-    return clean_lines
+    cleaned_text = "\n".join(clean_lines)
+    # print(cleaned_text)
+    return cleaned_text
