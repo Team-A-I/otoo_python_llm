@@ -23,9 +23,15 @@ check_env_variables()
 
 app = FastAPI()
 
+origins = [
+    "https://fastapi.otoo.kr",
+    "https://react.otoo.kr",
+    "https://restapi.otoo.kr",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -42,7 +48,7 @@ app.include_router(analysis_router)
 app.include_router(ocr_router)
 
 # 모든 예외 로깅
-@app.middleware("http")
+@app.middleware("https")
 async def log_exceptions(request: Request, call_next):
     try:
         response = await call_next(request)
