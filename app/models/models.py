@@ -16,9 +16,12 @@ api_key = os.getenv('OPENAI_API_KEY')
 class EmotionReportModel:
     def __init__(self, api_key):
         self.client = AsyncOpenAI(api_key=api_key)
-        self.model_name = get_model_name()
+
+    async def initialize(self):
+        self.model_name = await get_model_name()
 
     async def generate_messages_response(self, messages_request):
+        await self.initialize()
         messages = messages_request.messages
         
         messages = [
@@ -51,9 +54,12 @@ class EmotionReportModel:
 class ChatbotModel:
     def __init__(self, api_key):
         self.client = AsyncOpenAI(api_key=api_key)
-        self.model_name = get_model_name()
+
+    async def initialize(self):
+        self.model_name = await get_model_name()
 
     async def generate_chat_response(self, mode_request, recent_messages_request):
+        await self.initialize()
         recent_messages = recent_messages_request.RecentMessages
         mode = mode_request.mode
         
@@ -100,9 +106,12 @@ class ChatbotModel:
 class AnalysisModel:
     def __init__(self, api_key):
         self.client = AsyncOpenAI(api_key=api_key)
-        self.model_name = get_model_name()
+
+    async def initialize(self):
+        self.model_name = await get_model_name()
 
     async def analyze(self, text, analysis_type):
+        await self.initialize()
         if analysis_type == 'conflict':
             prompt = conflict_prompt
         elif analysis_type == 'love':
