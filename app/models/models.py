@@ -1,10 +1,9 @@
-from openai import OpenAI
+from openai import AsyncOpenAI
 import os
 from fastapi import HTTPException
 from db.db_util import get_model_name
 from prompts.prompts import conflict_prompt, love_prompt, friendship_prompt, emotion_report_prompt, chatbot_prompt_mode_2, chatbot_prompt_default
 from modules.module_pre import clean_chat
-from openai import AsyncOpenAI
 from dotenv import load_dotenv
 import base64
 import requests
@@ -140,10 +139,15 @@ class AnalysisModel:
     
 class OcrModel:
     def __init__(self, api_key):
-        self.model_name = get_model_name()
+        self.api_key = api_key
+        self.model_name = None
         self.ocrprompt = f'''The image above is a KakaoTalk conversation. White bubbles on the left are from the other person with a name, and yellow bubbles on the right are from the user. As an OCR expert, extract who said what in order. Name the yellow bubbles "User".'''
 
+    async def initialize(self):
+        self.model_name = await get_model_name()
+
     async def ocrvision(self, image: bytes, analysis_type: str):
+        await self.initialize()
         if analysis_type == 'conflict':
             prompt = self.ocrprompt + '\n' + conflict_prompt
         elif analysis_type == 'love':
@@ -157,7 +161,7 @@ class OcrModel:
 
         headers = {
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {api_key}"
+            "Authorization": f"Bearer {self.api_key}"
         }
 
         payload = {

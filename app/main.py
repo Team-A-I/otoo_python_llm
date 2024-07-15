@@ -13,14 +13,6 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def check_env_variables():
-    print("DB_HOST:", os.getenv('DB_HOST'))
-    print("DB_NAME:", os.getenv('DB_NAME'))
-    print("DB_USER:", os.getenv('DB_USER'))
-    print("DB_PASSWORD:", os.getenv('DB_PASSWORD'))
-
-check_env_variables()
-
 app = FastAPI()
 
 origins = [
