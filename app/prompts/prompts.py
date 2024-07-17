@@ -215,3 +215,39 @@ friendship_prompt = """
   }
 }
 """
+
+
+# stt 프롬프트 ----------------------------------------------------
+single_speaker_prompt = """
+## Order
+Analyze the following transcribed conversation:
+{conversation}
+
+1. Identify who is more at fault in this conversation and explain the reasons.
+2. Provide an analysis of the situation.
+3. Point out the parts where someone is at fault.
+4. Draw a conclusion.
+5. Provide an explanation to support the conclusion.
+6. Suggest solutions to resolve the issue.
+
+## Format json
+"""
+
+multi_speaker_prompt = """
+## Order
+Analyze the following transcribed conversation:
+{conversation}
+
+Participants:
+1. Speaker A
+2. Speaker B
+
+1. Identify who is more at fault in this conversation and explain the reasons.
+2. Provide an analysis of the situation.
+3. Point out the parts where someone is at fault.
+4. Draw a conclusion.
+5. Provide an explanation to support the conclusion.
+6. Suggest solutions to resolve the issue.
+
+## Format json
+"""
