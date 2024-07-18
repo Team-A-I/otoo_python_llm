@@ -8,6 +8,11 @@ from dotenv import load_dotenv
 import base64
 import requests
 import json
+from langchain_community.vectorstores import FAISS
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough
+from langchain_core.prompts import PromptTemplate
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
 load_dotenv()
 api_key = os.getenv('OPENAI_API_KEY')
@@ -23,32 +28,25 @@ class EmotionReportModel:
         await self.initialize()
         messages = messages_request.messages
         
-        messages = [
-            {
-                "role": "system",
-                "content": emotion_report_prompt
-            },
-            {
-                "role": "user",
-                "content": messages
-            }
-        ]
-        
         try:
-            completion = await self.client.chat.completions.create(
-                model=self.model_name,
-                messages=messages,
-                temperature=1,
-                max_tokens=1000,
-                top_p=0.5,
-                frequency_penalty=0,
-                presence_penalty=0
+            embeddings = OpenAIEmbeddings()
+            loaded_vectorstore = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
+            retriever = loaded_vectorstore.as_retriever()
+            llm = ChatOpenAI(model_name="gpt-4o", temperature=0)
+            prompt = PromptTemplate.from_template(emotion_report_prompt)
+            # 체인 설정
+            chain = (
+                {"context": retriever, "question": RunnablePassthrough()}
+                | prompt
+                | llm
+                | StrOutputParser()
             )
+            question = messages
+            response = chain.invoke(question)
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error calling OpenAI API: {str(e)}")
 
-        content_value = completion.choices[0].message.content
-        return content_value
+        return response
 
 class ChatbotModel:
     def __init__(self, api_key):
