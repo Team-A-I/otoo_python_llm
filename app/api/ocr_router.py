@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from pydantic import BaseModel
 from models.models import OcrModel, get_ocr_model
 from dotenv import load_dotenv
+from modules.module_ocr import ocr_text
 
 load_dotenv()
 
@@ -15,9 +16,6 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 router = APIRouter()
-
-async def ocr_text(client, image: bytes, analysis_type: str):
-    return await client.ocrvision(image, analysis_type)
 
 @router.post("/ocr")
 async def ocr(type: str = Form(...), file: UploadFile = File(...), model: OcrModel = Depends(get_ocr_model)):

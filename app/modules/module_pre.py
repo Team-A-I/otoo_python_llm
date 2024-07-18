@@ -1,7 +1,7 @@
 import re
 from datetime import datetime
 
-def clean_chat(data):
+def clean_chat(data, chunk_size=2000):
     # 날짜 인식
     date_pattern = re.compile(r'^-+ (\d{4}년 \d{1,2}월 \d{1,2}일) .+ -+$')
     # 카톡 메시지 인식
@@ -69,4 +69,17 @@ def clean_chat(data):
     add_message()  # 메시지 추가
     cleaned_text = "\n".join(clean_lines)
     # print(cleaned_text)
-    return cleaned_text
+
+    chunks = [cleaned_text[i:i + chunk_size] for i in range(0, len(cleaned_text), chunk_size)]
+
+    # for i, chunk in enumerate(chunks):
+    #     print(f'Chunk {i + 1}:\n{chunk}\n')
+
+    return chunks
+
+with open("C:\\Users\\user\\Desktop\\otoo_new\\otoo_python_llm\\app\\long_kakao.txt", 'r', encoding='utf-8') as file:
+    data = file.read()
+
+cleaned_chunks = clean_chat(data)
+for i, chunk in enumerate(cleaned_chunks):
+    print("**",i,"\n", chunk, "\n")

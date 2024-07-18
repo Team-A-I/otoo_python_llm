@@ -123,7 +123,7 @@ class AnalysisModel:
         try:
             text = clean_chat(text)
         except:
-            text = text
+            raise HTTPException(status_code=400, detail="Invalid analysis data")
         messages = [
             {"role": "system", "content": prompt},
             {"role": "user", "content": text}
