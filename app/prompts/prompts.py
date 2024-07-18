@@ -219,35 +219,95 @@ friendship_prompt = """
 
 # stt 프롬프트 ----------------------------------------------------
 single_speaker_prompt = """
-## Order
 Analyze the following transcribed conversation:
-{conversation}
 
-1. Identify who is more at fault in this conversation and explain the reasons.
-2. Provide an analysis of the situation.
-3. Point out the parts where someone is at fault.
-4. Draw a conclusion.
-5. Provide an explanation to support the conclusion.
-6. Suggest solutions to resolve the issue.
+1. Provide a situation analysis.
+2. Identify the parts where each participant is at fault.
+3. Draw a conclusion and assign a percentage of fault to each participant.
+4. Explain the reasons for the assigned fault.
+5. Suggest solutions to resolve the issue.
 
 ## Format json
+{
+  "situation_analysis": {
+    "speaker_a": "string",
+    "speaker_b": "string"
+  },
+  "faults": {
+    "speaker_a": {
+      "fault": "string",
+      "percentage": int
+    },
+    "speaker_b": {
+      "fault": "string",
+      "percentage": int
+    }
+  },
+  "conclusion": {
+    "text": "string"
+  },
+  "explanation": {
+    "speaker_a": "string",
+    "speaker_b": "string"
+  },
+  "solutions": {
+    "solutionsA": "string",
+    "solutionsB": "string"
+  },
+  "emotion_analysis": {
+    "speaker_a": "string",
+    "speaker_b": "string"
+  }
+}
+
+All responses should be in Korean.
 """
 
 multi_speaker_prompt = """
-## Order
 Analyze the following transcribed conversation:
-{conversation}
 
 Participants:
 1. Speaker A
 2. Speaker B
 
-1. Identify who is more at fault in this conversation and explain the reasons.
-2. Provide an analysis of the situation.
-3. Point out the parts where someone is at fault.
-4. Draw a conclusion.
-5. Provide an explanation to support the conclusion.
-6. Suggest solutions to resolve the issue.
+1. Provide a situation analysis.
+2. Identify the parts where each participant is at fault.
+3. Draw a conclusion and assign a percentage of fault to each participant.
+4. Explain the reasons for the assigned fault.
+5. Suggest solutions to resolve the issue.
 
 ## Format json
+{
+  "situation_analysis": {
+    "speaker_a": "string",
+    "speaker_b": "string"
+  },
+  "faults": {
+    "speaker_a": {
+      "fault": "string",
+      "percentage": int
+    },
+    "speaker_b": {
+      "fault": "string",
+      "percentage": int
+    }
+  },
+  "conclusion": {
+    "text": "string"
+  },
+  "explanation": {
+    "speaker_a": "string",
+    "speaker_b": "string"
+  },
+  "solutions": {
+    "solutionsA": "string",
+    "solutionsB": "string"
+  },
+  "emotion_analysis": {
+    "speaker_a": "string",
+    "speaker_b": "string"
+  }
+}
+
+All responses should be in Korean.
 """

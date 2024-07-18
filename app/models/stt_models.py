@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 import os
 from fastapi import HTTPException
 from db.db_util import get_model_name
+import json
+import re
 
 load_dotenv()
 api_key = os.getenv('OPENAI_API_KEY')
@@ -17,43 +19,64 @@ class Utterance(BaseModel):
     spk_type: str
     msg: str
 
+class STTResults(BaseModel):
+    utterances: List[Utterance]
+    verified: List[bool]
+
 class STTResponse(BaseModel):
     id: str
     status: str
-    results: Dict[str, List[Utterance]]
+    results: STTResults
+
+class Analysis(BaseModel):
+    speaker_a: str
+    speaker_b: str
+
+class Fault(BaseModel):
+    fault: str
+    percentage: int
+
+class Explanation(BaseModel):
+    speaker_a: str
+    speaker_b: str
+
+class Solutions(BaseModel):
+    solutionsA: str
+    solutionsB: str
+
+class EmotionAnalysis(BaseModel):
+    speaker_a: str
+    speaker_b: str
+
+class AnalysisResponse(BaseModel):
+    situation_analysis: Analysis
+    faults: Dict[str, Fault]
+    conclusion: Dict[str, str]
+    explanation: Explanation
+    solutions: Solutions
+    emotion_analysis: EmotionAnalysis
 
 class STTModel:
     def __init__(self, api_key):
         self.client = AsyncOpenAI(api_key=api_key)
+        self.model_name = None
 
     async def initialize(self):
-        self.model_name = await get_model_name()
+        if self.model_name is None:
+            self.model_name = await get_model_name()
 
-    async def analyze_stt(self, response: STTResponse):
+    async def analyze_stt(self, response: STTResponse) -> AnalysisResponse:
         await self.initialize()
-        speakers = {utterance.spk for utterance in response.results['utterances']}
+        speakers = {utterance.spk for utterance in response.results.utterances}
         
         if len(speakers) == 1:
-            conversation = ""
-            for utterance in response.results['utterances']:
-                conversation += f"I: {utterance.msg}\n"
-            
-            prompt = single_speaker_prompt.format(conversation=conversation)
+            prompt = single_speaker_prompt
         else:
-            conversation = ""
-            for utterance in response.results['utterances']:
-                if utterance.spk == 0:
-                    conversation += f"A: {utterance.msg}\n"
-                else:
-                    conversation += f"B: {utterance.msg}\n"
-            
-            prompt = multi_speaker_prompt.format(conversation=conversation)
+            prompt = multi_speaker_prompt
+
+        messages = [{"role": "system", "content": prompt}]
         
-        messages = [
-            {"role": "system", "content": prompt}
-        ]
-        
-        for utterance in response.results['utterances']:
+        for utterance in response.results.utterances:
             if len(speakers) == 1:
                 messages.append({"role": "user", "content": f"I: {utterance.msg}"})
             else:
@@ -72,7 +95,17 @@ class STTModel:
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error calling OpenAI API: {str(e)}")
 
-        return completion.choices[0].message.content.strip()
+        content = completion.choices[0].message.content.strip()
+
+        # Remove any leading/trailing markdown code fences
+        content = re.sub(r'^```json\n|```$', '', content)
+
+        try:
+            response_json = json.loads(content)
+        except json.JSONDecodeError as e:
+            raise HTTPException(status_code=500, detail=f"Error parsing JSON response: {str(e)}")
+        
+        return AnalysisResponse(**response_json)
 
 stt_model = STTModel(api_key=api_key)
 
