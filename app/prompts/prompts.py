@@ -221,6 +221,9 @@ friendship_prompt = """
 single_speaker_prompt = """
 Analyze the following transcribed conversation:
 
+There might be inconsistencies in speaker diarization. Use the context and content of the conversation to accurately attribute each part to the correct speaker.
+
+
 1. Provide a situation analysis.
 2. Identify the parts where each participant is at fault.
 3. Draw a conclusion and assign a percentage of fault to each participant.
@@ -265,6 +268,9 @@ All responses should be in Korean.
 
 multi_speaker_prompt = """
 Analyze the following transcribed conversation:
+
+There might be inconsistencies in speaker diarization. Use the context and content of the conversation to accurately attribute each part to the correct speaker.
+
 
 Participants:
 1. Speaker A
