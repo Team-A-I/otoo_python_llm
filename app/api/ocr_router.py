@@ -1,11 +1,11 @@
 import logging
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
-from pydantic import BaseModel
-from models.models import OcrModel, get_ocr_model
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form
+from models.models import get_ocr_model
+from typing import List
 from dotenv import load_dotenv
-from modules.module_ocr import ocr_text
 
 load_dotenv()
+ocr_model = get_ocr_model()
 
 # 로거 설정
 logger = logging.getLogger(__name__)
@@ -18,10 +18,9 @@ logger.addHandler(handler)
 router = APIRouter()
 
 @router.post("/ocr")
-async def ocr(type: str = Form(...), file: UploadFile = File(...), model: OcrModel = Depends(get_ocr_model)):
+async def process_images(files: List[UploadFile] = File(...), type: str = Form(...)):
     try:
-        image = await file.read()
-        response = await ocr_text(model, image, type)
+        response = await ocr_model.process_uploaded_files(files, type)
         return {"response": response}
     except ValueError as e:
         logger.error("ValueError: %s", e)
