@@ -6,6 +6,7 @@ from api.emotion_report_router import router as emotion_report_router
 from api.chatbot_router import router as chatbot_router
 from api.analysis_router import router as analysis_router
 from api.ocr_router import router as ocr_router
+from api.qna_router import router as qna_router
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -38,6 +39,7 @@ app.include_router(emotion_report_router)
 app.include_router(chatbot_router)
 app.include_router(analysis_router)
 app.include_router(ocr_router)
+app.include_router(qna_router)
 
 # 모든 예외 로깅
 @app.middleware("https")
