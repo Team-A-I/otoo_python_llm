@@ -3,7 +3,7 @@ FROM python:3.10
 
 # Update and install necessary packages
 RUN apt-get update && \
-    apt-get install -y freetds-dev libssl-dev && \
+    apt-get install -y freetds-dev libssl-dev libgl1-mesa-glx && \
     rm -rf /var/lib/apt/lists/*
 
 # Set environment variables
