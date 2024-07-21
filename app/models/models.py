@@ -2,10 +2,15 @@ from openai import AsyncOpenAI
 import os
 from fastapi import HTTPException
 from db.db_util import get_model_name
-from prompts.prompts import conflict_prompt, love_prompt, friendship_prompt, emotion_report_prompt, chatbot_prompt_mode_2, chatbot_prompt_default
+from prompts.prompts import conflict_prompt, love_prompt, friendship_prompt, emotion_report_prompt, chatbot_prompt_mode_2, chatbot_prompt_default, qna_prompt
 from modules.module_pre import clean_chat
 from dotenv import load_dotenv
 from models.image_processor import ImageProcessor
+from langchain_community.vectorstores import FAISS
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnablePassthrough
+from langchain_core.prompts import PromptTemplate
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
 load_dotenv()
 api_key = os.getenv('OPENAI_API_KEY')
@@ -21,32 +26,56 @@ class EmotionReportModel:
         await self.initialize()
         messages = messages_request.messages
         
-        messages = [
-            {
-                "role": "system",
-                "content": emotion_report_prompt
-            },
-            {
-                "role": "user",
-                "content": messages
-            }
-        ]
-        
         try:
-            completion = await self.client.chat.completions.create(
-                model=self.model_name,
-                messages=messages,
-                temperature=1,
-                max_tokens=1000,
-                top_p=0.5,
-                frequency_penalty=0,
-                presence_penalty=0
+            embeddings = OpenAIEmbeddings()
+            loaded_vectorstore = FAISS.load_local("faiss/emotion_index", embeddings, allow_dangerous_deserialization=True)
+            retriever = loaded_vectorstore.as_retriever()
+            llm = ChatOpenAI(model_name="gpt-4o", temperature=0)
+            prompt = PromptTemplate.from_template(emotion_report_prompt)
+            # 체인 설정
+            chain = (
+                {"context": retriever, "question": RunnablePassthrough()}
+                | prompt
+                | llm
+                | StrOutputParser()
             )
+            question = messages
+            response = chain.invoke(question)
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error calling OpenAI API: {str(e)}")
 
-        content_value = completion.choices[0].message.content
-        return content_value
+        return response
+
+class QnaModel:
+    def __init__(self, api_key):
+        self.client = AsyncOpenAI(api_key=api_key)
+
+    async def initialize(self):
+        self.model_name = await get_model_name()
+
+    async def generate_qna_response(self, messages_request):
+        await self.initialize()
+        messages = messages_request.messages
+        
+        try:
+            embeddings = OpenAIEmbeddings()
+            loaded_vectorstore = FAISS.load_local("faiss/qna_index", embeddings, allow_dangerous_deserialization=True)
+            retriever = loaded_vectorstore.as_retriever()
+            llm = ChatOpenAI(model_name="gpt-4o", temperature=0)
+            prompt = PromptTemplate.from_template(qna_prompt)
+            # 체인 설정
+            chain = (
+                {"context": retriever, "question": RunnablePassthrough()}
+                | prompt
+                | llm
+                | StrOutputParser()
+            )
+            question = messages
+            response = chain.invoke(question)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error calling OpenAI API: {str(e)}")
+
+        return response
 
 class ChatbotModel:
     def __init__(self, api_key):
@@ -193,6 +222,7 @@ emotion_report_model = EmotionReportModel(api_key=api_key)
 chatbot_model = ChatbotModel(api_key=api_key)
 analysis_model = AnalysisModel(api_key=api_key)
 ocr_model = OcrModel(api_key=api_key)
+qna_model = QnaModel(api_key=api_key)
 
 def get_emotion_report_model():
     return emotion_report_model
@@ -210,4 +240,8 @@ def get_ocr_model():
     if ocr_model_instance is None:
         ocr_model_instance = ocr_model
     return ocr_model_instance
+
+def get_qna_model():
+    return qna_model
+    
 
