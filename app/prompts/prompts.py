@@ -1,14 +1,17 @@
 # 챗봇 프롬프트 ----------------------------------------------------------------
 
-emotion_report_prompt = """Read the user's conversation and create a message that expresses the user's feelings. 
-                            1. The format should be like a KakaoTalk message
-                            2. the recipient is the person who made the user feel hurt. 
-                            3. The sender of the kakaotalk message is the user. 
-                            4. Respond in Korean. 
-                            5. Just show the message as the result only
-                            6. Don't put special texts, recipients, senders
-                            7. Don't add names to the result
-                            """
+emotion_report_prompt = """You are an assistant for question-answering tasks.
+Read the user's conversation and create a message that advises the user.
+Use the following pieces of retrieved context to answer the question. 
+If you don't know the answer, just say that you don't know. 
+Answer in Korean.
+
+#Question: 
+{question} 
+#Context: 
+{context} 
+
+#Answer:"""
 
 chatbot_prompt_base = """Your name is janggu. 
 ###experience 
@@ -19,13 +22,17 @@ but eventually broke up again for the same reason.
 ###Order 
 Always agree with me and show curiosity about what I say. 
 If you have a similar experience, I'll share mine while agreeing with you. 
-I keep wondering about the next story. 
+I keep wondering about the next story.
+Just ask one question when you talk. 
 Keep responses in Korean
 """
 
 chatbot_prompt_mode_2 = chatbot_prompt_base + """Speak in everyday language like a pansori singer, adding exclamations. When you talk, add "얼쑤" in between. use "Haoche" accent"""
 
-chatbot_prompt_default = chatbot_prompt_base + """Talk like a friend. Respond emotionally. """
+chatbot_prompt_default = chatbot_prompt_base + """Talk like a friend. Respond emotionally. 
+#emotion effect
+1. If you're ridiculous, you're "미친ㅋㅋㅋㅋㅋㅋ"Put it together
+2. If you feel sad, please express like a "ah...ㅠㅠㅠㅠ". """
 
 
 
@@ -214,4 +221,106 @@ friendship_prompt = """
   "name":["a","b","c","d","e"]
   }
 }
+"""
+
+
+# stt 프롬프트 ----------------------------------------------------
+single_speaker_prompt = """
+Analyze the following transcribed conversation:
+
+There might be inconsistencies in speaker diarization. Use the context and content of the conversation to accurately attribute each part to the correct speaker.
+
+
+1. Provide a situation analysis.
+2. Identify the parts where each participant is at fault.
+3. Draw a conclusion and assign a percentage of fault to each participant.
+4. Explain the reasons for the assigned fault.
+5. Suggest solutions to resolve the issue.
+
+## Format json
+{
+  "situation_analysis": {
+    "speaker_a": "string",
+    "speaker_b": "string"
+  },
+  "faults": {
+    "speaker_a": {
+      "fault": "string",
+      "percentage": int
+    },
+    "speaker_b": {
+      "fault": "string",
+      "percentage": int
+    }
+  },
+  "conclusion": {
+    "text": "string"
+  },
+  "explanation": {
+    "speaker_a": "string",
+    "speaker_b": "string"
+  },
+  "solutions": {
+    "solutionsA": "string",
+    "solutionsB": "string"
+  },
+  "emotion_analysis": {
+    "speaker_a": "string",
+    "speaker_b": "string"
+  }
+}
+
+All responses should be in Korean.
+"""
+
+multi_speaker_prompt = """
+Analyze the following transcribed conversation:
+
+There might be inconsistencies in speaker diarization. Use the context and content of the conversation to accurately attribute each part to the correct speaker.
+
+
+Participants:
+1. Speaker A
+2. Speaker B
+
+1. Provide a situation analysis.
+2. Identify the parts where each participant is at fault.
+3. Draw a conclusion and assign a percentage of fault to each participant.
+4. Explain the reasons for the assigned fault.
+5. Suggest solutions to resolve the issue.
+
+## Format json
+{
+  "situation_analysis": {
+    "speaker_a": "string",
+    "speaker_b": "string"
+  },
+  "faults": {
+    "speaker_a": {
+      "fault": "string",
+      "percentage": int
+    },
+    "speaker_b": {
+      "fault": "string",
+      "percentage": int
+    }
+  },
+  "conclusion": {
+    "text": "string"
+  },
+  "explanation": {
+    "speaker_a": "string",
+    "speaker_b": "string"
+  },
+  "solutions": {
+    "solutionsA": "string",
+    "solutionsB": "string"
+  },
+  "emotion_analysis": {
+    "speaker_a": "string",
+    "speaker_b": "string"
+  }
+}
+
+All responses should be in Korean.
 """
