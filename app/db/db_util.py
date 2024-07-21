@@ -25,3 +25,18 @@ async def get_model_name():
     connection.close()
     model_name = result[0] if result else None
     return model_name
+
+async def get_db_connection2():
+    try:
+        connection = await aiomysql.connect(
+            host=os.getenv('DB_HOST'),
+            user=os.getenv('DB_USER'),
+            password=os.getenv('DB_PASSWORD'),
+            db=os.getenv('DB_NAME'),
+            charset='utf8mb4',
+            cursorclass=aiomysql.cursors.DictCursor
+        )
+        return connection
+    except aiomysql.Error as e:
+        print("Error while connecting to MySQL:", e)
+        return None

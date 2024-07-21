@@ -238,3 +238,105 @@ friendship_prompt = """
   }
 }
 """
+
+
+# stt 프롬프트 ----------------------------------------------------
+single_speaker_prompt = """
+Analyze the following transcribed conversation:
+
+There might be inconsistencies in speaker diarization. Use the context and content of the conversation to accurately attribute each part to the correct speaker.
+
+
+1. Provide a situation analysis.
+2. Identify the parts where each participant is at fault.
+3. Draw a conclusion and assign a percentage of fault to each participant.
+4. Explain the reasons for the assigned fault.
+5. Suggest solutions to resolve the issue.
+
+## Format json
+{
+  "situation_analysis": {
+    "speaker_a": "string",
+    "speaker_b": "string"
+  },
+  "faults": {
+    "speaker_a": {
+      "fault": "string",
+      "percentage": int
+    },
+    "speaker_b": {
+      "fault": "string",
+      "percentage": int
+    }
+  },
+  "conclusion": {
+    "text": "string"
+  },
+  "explanation": {
+    "speaker_a": "string",
+    "speaker_b": "string"
+  },
+  "solutions": {
+    "solutionsA": "string",
+    "solutionsB": "string"
+  },
+  "emotion_analysis": {
+    "speaker_a": "string",
+    "speaker_b": "string"
+  }
+}
+
+All responses should be in Korean.
+"""
+
+multi_speaker_prompt = """
+Analyze the following transcribed conversation:
+
+There might be inconsistencies in speaker diarization. Use the context and content of the conversation to accurately attribute each part to the correct speaker.
+
+
+Participants:
+1. Speaker A
+2. Speaker B
+
+1. Provide a situation analysis.
+2. Identify the parts where each participant is at fault.
+3. Draw a conclusion and assign a percentage of fault to each participant.
+4. Explain the reasons for the assigned fault.
+5. Suggest solutions to resolve the issue.
+
+## Format json
+{
+  "situation_analysis": {
+    "speaker_a": "string",
+    "speaker_b": "string"
+  },
+  "faults": {
+    "speaker_a": {
+      "fault": "string",
+      "percentage": int
+    },
+    "speaker_b": {
+      "fault": "string",
+      "percentage": int
+    }
+  },
+  "conclusion": {
+    "text": "string"
+  },
+  "explanation": {
+    "speaker_a": "string",
+    "speaker_b": "string"
+  },
+  "solutions": {
+    "solutionsA": "string",
+    "solutionsB": "string"
+  },
+  "emotion_analysis": {
+    "speaker_a": "string",
+    "speaker_b": "string"
+  }
+}
+
+All responses should be in Korean.
+"""
