@@ -48,6 +48,19 @@ class EmotionAnalysis(BaseModel):
     speaker_a: str
     speaker_b: str
 
+class IncidentStage(BaseModel):
+    a_behavior: str
+    a_emotion: str
+    b_behavior: str
+    b_emotion: str
+
+class Incident(BaseModel):
+    development: IncidentStage
+    deployment: IncidentStage
+    crisis: IncidentStage
+    climax: IncidentStage
+    ending: IncidentStage
+
 class AnalysisResponse(BaseModel):
     situation_analysis: Analysis
     faults: Dict[str, Fault]
@@ -55,6 +68,7 @@ class AnalysisResponse(BaseModel):
     explanation: Explanation
     solutions: Solutions
     emotion_analysis: EmotionAnalysis
+    Incident: Incident  
 
 class STTModel:
     def __init__(self, api_key):
@@ -90,7 +104,7 @@ class STTModel:
                 model=self.model_name,
                 messages=messages,
                 temperature=0.7,
-                max_tokens=3000
+                max_tokens=4000
             )
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error calling OpenAI API: {str(e)}")
