@@ -9,7 +9,8 @@ from api.ocr_router import router as ocr_router
 from api.qna_router import router as qna_router
 from api.stt_router import router as stt_router
 from dotenv import load_dotenv
-
+import os
+os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 load_dotenv()
 # 로그 설정
 logging.basicConfig(level=logging.INFO)
