@@ -54,53 +54,119 @@ Answer in Korean.
 #Answer:"""
 
 # 갈등 프롬프트 ----------------------------------------------------
-conflict_prompt = """
+conflict_prompt =  """
 ##Order
-You have to give me the answer I want from the given text. 1. Indicate in % who is at fault in this altercation. 
-2. In the conversation between the two, show the cause of the conflict in %.
-3. Indicate in % who is more MBTI 'T' sullen, who is more offended, and who is more tactless. 
-Additionally, provide a one-sentence explanation for each result.
-4. In the conversation, show the Top 5 with a simple word keyword what the priorities each think of.
-5. How to resolve the conflict between two people:
-5-1. The 'very lively and positive personality' character gives pleasant and funny advice. Please answer in detail and make the advice longer.
-5-2. The character in 'a very hot and straightforward personality' gives impulsive and clear advice, but speaks like a cursing grandfather. Please elaborate and make the advice longer.
-5-3. The 'very timid, sad and hesitant' character gives vague advice from a neutral standpoint. Please provide a longer and more detailed explanation. Must answer in Korean.
+Analyze the following transcribed conversation:
 
-##Format json
+There might be inconsistencies in speaker diarization. Use the context and content of the conversation to accurately attribute each part to the correct speaker.
+
+
+Participants:
+1. A
+2. B
+
+1. Provide a situation analysis.
+   - Describe the overall context of the conversation.
+   - Identify the main issue being discussed.
+   - Highlight the perspectives and goals of both participants.
+   - Include any relevant background information that could impact the conversation.
+   - Discuss the emotional tone and any noticeable changes throughout the conversation.
+
+2. Identify the parts where each participant is at fault.
+   - Provide specific examples of statements or actions that show fault.
+   - Explain why these parts are considered faults.
+   - Discuss the impact of these faults on the overall conversation.
+   - Include any repeated patterns of behavior or speech that contribute to the fault.
+
+3. Draw a conclusion and assign a percentage of fault to each participant.
+   - Summarize the key points that led to your conclusion.
+   - Justify the percentage of fault assigned to each participant based on their actions and statements.
+   - Consider any mitigating factors that might influence the assignment of fault.
+   - Discuss the relative severity of each participant's faults.
+
+4. Explain the reasons for the assigned fault.
+   - Detail the logical reasoning and evidence behind the fault assignment.
+   - Consider the context and impact of each participant's actions and words.
+   - Discuss how each participant's behavior influenced the other’s responses.
+   - Include any relevant theories or frameworks that support your analysis.
+
+5. Suggest solutions to resolve the issue.
+   - Propose actionable steps that each participant can take to resolve the conflict.
+   - Include both immediate actions and long-term strategies.
+   - Discuss the potential challenges in implementing these solutions.
+   - Suggest ways to prevent similar issues in the future, including communication strategies or behavioral changes.
+
+6. Describe the incident development, deployment, crisis, climax, and ending including the behaviors and emotions of each participant.
+   - Provide a detailed account of the behaviors and emotions at each stage.
+   - Discuss how the interaction evolved and what triggered key changes.
+   - Analyze the progression of the incident and its resolution.
+   - Include any notable quotes or exchanges that illustrate the dynamics between the participants.
+
+## Format json
 {
-    "total_score": {
-        "name1": num,
-        "name2": num
+  "situation_analysis": {
+    "speaker_a": "string",
+    "speaker_b": "string"
+  },
+  "faults": {
+    "speaker_a": {
+      "fault": "string",
+      "percentage": int
     },
-    "conflict_cause_percentage": {
-        "cause1": num, (korean)
-        "cause2": num, (korean)
-        "cause3": num, (korean)
-        "cause4": num, (korean)
-        "cause5": num, (korean)
-    },
-    "mbti_tendency_percentage": {
-        "name1": num,
-        "name2": num,
-    },
-    "offended_percentage": {
-        "name1": num,
-        "name2": num
-    },
-    "tactless_percentage": {
-        "name1": num,
-        "name2": num
-    },
-    "priority_keywords": {
-        "name1": ["keywords1", "keywords2", "keywords3", "keywords4", "keywords5"], (korean)
-        "name2": ["keywords1", "keywords2", "keywords3", "keywords4", "keywords5"] (korean)
-    },
-    "conflict_resolution_advice": {
-        "positive_personality": str,
-        "straightforward_personality": str,
-        "timid_personality": str
+    "speaker_b": {
+      "fault": "string",
+      "percentage": int
     }
+  },
+  "conclusion": {
+    "text": "string"
+  },
+  "explanation": {
+    "speaker_a": "string",
+    "speaker_b": "string"
+  },
+  "solutions": {
+    "solutionsA": "string",
+    "solutionsB": "string"
+  },
+  "emotion_analysis": {
+    "speaker_a": "string",
+    "speaker_b": "string"
+  },
+  "Incident": {
+    "development": {
+      "a_behavior": "string",
+      "a_emotion": "string",
+      "b_behavior": "string",
+      "b_emotion": "string"
+    },
+    "deployment": {
+      "a_behavior": "string",
+      "a_emotion": "string",
+      "b_behavior": "string",
+      "b_emotion": "string"
+    },
+    "crisis": {
+      "a_behavior": "string",
+      "a_emotion": "string",
+      "b_behavior": "string",
+      "b_emotion": "string"
+    },
+    "climax": {
+      "a_behavior": "string",
+      "a_emotion": "string",
+      "b_behavior": "string",
+      "b_emotion": "string"
+    },
+    "ending": {
+      "a_behavior": "string",
+      "a_emotion": "string",
+      "b_behavior": "string",
+      "b_emotion": "string"
+    }
+  }
 }
+All responses should be in Korean.
 """
 
 
@@ -249,10 +315,41 @@ There might be inconsistencies in speaker diarization. Use the context and conte
 
 
 1. Provide a situation analysis.
+   - Describe the overall context of the conversation.
+   - Identify the main issue being discussed.
+   - Highlight the perspectives and goals of both participants.
+   - Include any relevant background information that could impact the conversation.
+   - Discuss the emotional tone and any noticeable changes throughout the conversation.
+
 2. Identify the parts where each participant is at fault.
+   - Provide specific examples of statements or actions that show fault.
+   - Explain why these parts are considered faults.
+   - Discuss the impact of these faults on the overall conversation.
+   - Include any repeated patterns of behavior or speech that contribute to the fault.
+
 3. Draw a conclusion and assign a percentage of fault to each participant.
+   - Summarize the key points that led to your conclusion.
+   - Justify the percentage of fault assigned to each participant based on their actions and statements.
+   - Consider any mitigating factors that might influence the assignment of fault.
+   - Discuss the relative severity of each participant's faults.
+
 4. Explain the reasons for the assigned fault.
+   - Detail the logical reasoning and evidence behind the fault assignment.
+   - Consider the context and impact of each participant's actions and words.
+   - Discuss how each participant's behavior influenced the other’s responses.
+   - Include any relevant theories or frameworks that support your analysis.
+
 5. Suggest solutions to resolve the issue.
+   - Propose actionable steps that each participant can take to resolve the conflict.
+   - Include both immediate actions and long-term strategies.
+   - Discuss the potential challenges in implementing these solutions.
+   - Suggest ways to prevent similar issues in the future, including communication strategies or behavioral changes.
+
+6. Describe the incident development, deployment, crisis, climax, and ending including the behaviors and emotions of each participant.
+   - Provide a detailed account of the behaviors and emotions at each stage.
+   - Discuss how the interaction evolved and what triggered key changes.
+   - Analyze the progression of the incident and its resolution.
+   - Include any notable quotes or exchanges that illustrate the dynamics between the participants.
 
 ## Format json
 {
@@ -284,9 +381,40 @@ There might be inconsistencies in speaker diarization. Use the context and conte
   "emotion_analysis": {
     "speaker_a": "string",
     "speaker_b": "string"
+  },
+  "Incident": {
+    "development": {
+      "a_behavior": "string",
+      "a_emotion": "string",
+      "b_behavior": "string",
+      "b_emotion": "string"
+    },
+    "deployment": {
+      "a_behavior": "string",
+      "a_emotion": "string",
+      "b_behavior": "string",
+      "b_emotion": "string"
+    },
+    "crisis": {
+      "a_behavior": "string",
+      "a_emotion": "string",
+      "b_behavior": "string",
+      "b_emotion": "string"
+    },
+    "climax": {
+      "a_behavior": "string",
+      "a_emotion": "string",
+      "b_behavior": "string",
+      "b_emotion": "string"
+    },
+    "ending": {
+      "a_behavior": "string",
+      "a_emotion": "string",
+      "b_behavior": "string",
+      "b_emotion": "string"
+    }
   }
 }
-
 All responses should be in Korean.
 """
 
@@ -297,14 +425,45 @@ There might be inconsistencies in speaker diarization. Use the context and conte
 
 
 Participants:
-1. Speaker A
-2. Speaker B
+1. A
+2. B
 
 1. Provide a situation analysis.
+   - Describe the overall context of the conversation.
+   - Identify the main issue being discussed.
+   - Highlight the perspectives and goals of both participants.
+   - Include any relevant background information that could impact the conversation.
+   - Discuss the emotional tone and any noticeable changes throughout the conversation.
+
 2. Identify the parts where each participant is at fault.
+   - Provide specific examples of statements or actions that show fault.
+   - Explain why these parts are considered faults.
+   - Discuss the impact of these faults on the overall conversation.
+   - Include any repeated patterns of behavior or speech that contribute to the fault.
+
 3. Draw a conclusion and assign a percentage of fault to each participant.
+   - Summarize the key points that led to your conclusion.
+   - Justify the percentage of fault assigned to each participant based on their actions and statements.
+   - Consider any mitigating factors that might influence the assignment of fault.
+   - Discuss the relative severity of each participant's faults.
+
 4. Explain the reasons for the assigned fault.
+   - Detail the logical reasoning and evidence behind the fault assignment.
+   - Consider the context and impact of each participant's actions and words.
+   - Discuss how each participant's behavior influenced the other’s responses.
+   - Include any relevant theories or frameworks that support your analysis.
+
 5. Suggest solutions to resolve the issue.
+   - Propose actionable steps that each participant can take to resolve the conflict.
+   - Include both immediate actions and long-term strategies.
+   - Discuss the potential challenges in implementing these solutions.
+   - Suggest ways to prevent similar issues in the future, including communication strategies or behavioral changes.
+
+6. Describe the incident development, deployment, crisis, climax, and ending including the behaviors and emotions of each participant.
+   - Provide a detailed account of the behaviors and emotions at each stage.
+   - Discuss how the interaction evolved and what triggered key changes.
+   - Analyze the progression of the incident and its resolution.
+   - Include any notable quotes or exchanges that illustrate the dynamics between the participants.
 
 ## Format json
 {
@@ -336,8 +495,39 @@ Participants:
   "emotion_analysis": {
     "speaker_a": "string",
     "speaker_b": "string"
+  },
+  "Incident": {
+    "development": {
+      "a_behavior": "string",
+      "a_emotion": "string",
+      "b_behavior": "string",
+      "b_emotion": "string"
+    },
+    "deployment": {
+      "a_behavior": "string",
+      "a_emotion": "string",
+      "b_behavior": "string",
+      "b_emotion": "string"
+    },
+    "crisis": {
+      "a_behavior": "string",
+      "a_emotion": "string",
+      "b_behavior": "string",
+      "b_emotion": "string"
+    },
+    "climax": {
+      "a_behavior": "string",
+      "a_emotion": "string",
+      "b_behavior": "string",
+      "b_emotion": "string"
+    },
+    "ending": {
+      "a_behavior": "string",
+      "a_emotion": "string",
+      "b_behavior": "string",
+      "b_emotion": "string"
+    }
   }
 }
-
 All responses should be in Korean.
 """
