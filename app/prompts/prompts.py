@@ -101,6 +101,11 @@ Participants:
    - Analyze the progression of the incident and its resolution.
    - Include any notable quotes or exchanges that illustrate the dynamics between the participants.
 
+7. Assign appropriate and witty nicknames to each participant based on the context of the conversation.
+   - The nickname should clearly reflect the behavior, personality, or role of each participant in the conversation.
+   - Ensure the nickname is clever, inoffensive, and suitable for a professional setting.
+   - Provide a brief explanation for each nickname.
+   
 ## Format json
 {
   "situation_analysis": {
@@ -163,7 +168,11 @@ Participants:
       "b_behavior": "string",
       "b_emotion": "string"
     }
-  }
+  },
+  "nickname": {
+    "nickname_a": "string",
+    "nickname_b": "string"
+  },
 }
 All responses should be in Korean.
 """
@@ -350,6 +359,11 @@ There might be inconsistencies in speaker diarization. Use the context and conte
    - Analyze the progression of the incident and its resolution.
    - Include any notable quotes or exchanges that illustrate the dynamics between the participants.
 
+7. Assign appropriate and witty nicknames to each participant based on the context of the conversation.
+   - The nickname should clearly reflect the behavior, personality, or role of each participant in the conversation.
+   - Ensure the nickname is clever, inoffensive, and suitable for a professional setting.
+   - Provide a brief explanation for each nickname.
+   
 ## Format json
 {
   "situation_analysis": {
@@ -412,7 +426,11 @@ There might be inconsistencies in speaker diarization. Use the context and conte
       "b_behavior": "string",
       "b_emotion": "string"
     }
-  }
+  },
+  "nickname": {
+    "nickname_a": "string",
+    "nickname_b": "string"
+  },
 }
 All responses should be in Korean.
 """
@@ -421,7 +439,6 @@ multi_speaker_prompt = """
 Analyze the following transcribed conversation:
 
 There might be inconsistencies in speaker diarization. Use the context and content of the conversation to accurately attribute each part to the correct speaker.
-
 
 Participants:
 1. A
@@ -464,6 +481,11 @@ Participants:
    - Analyze the progression of the incident and its resolution.
    - Include any notable quotes or exchanges that illustrate the dynamics between the participants.
 
+7. Assign appropriate and witty nicknames to each participant based on the context of the conversation.
+   - The nickname should clearly reflect the behavior, personality, or role of each participant in the conversation.
+   - Ensure the nickname is clever, inoffensive, and suitable for a professional setting.
+   - Provide a brief explanation for each nickname.
+
 ## Format json
 {
   "situation_analysis": {
@@ -526,6 +548,10 @@ Participants:
       "b_behavior": "string",
       "b_emotion": "string"
     }
+  },
+  "nicknames": {
+    "nickname_a": "string",
+    "nickname_b": "string"
   }
 }
 All responses should be in Korean.
