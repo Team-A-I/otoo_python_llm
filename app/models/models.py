@@ -204,14 +204,14 @@ class OcrModel:
     
     async def process_uploaded_files(self, files, type):
         results = await self.image_processor.process_images(files)
-        all_white_text, all_yellow_text = results
+        all_left_text, all_right_text = results
 
-        if not all_white_text and not all_yellow_text:
+        if not all_left_text and not all_right_text:
             raise ValueError("조건에 맞는 데이터를 넣어주세요")
         
         text_data = {
-            "상대방": all_white_text,
-            "나": all_yellow_text
+            "상대방": all_left_text,
+            "나": all_right_text
         }
         
         analysis_result = await self.analyze(text_data, type)
