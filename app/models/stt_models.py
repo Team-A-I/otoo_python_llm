@@ -61,6 +61,10 @@ class Incident(BaseModel):
     climax: IncidentStage
     ending: IncidentStage
 
+class Nickname(BaseModel):
+    nickname_a : str
+    nickname_b : str
+
 class AnalysisResponse(BaseModel):
     situation_analysis: Analysis
     faults: Dict[str, Fault]
@@ -68,7 +72,8 @@ class AnalysisResponse(BaseModel):
     explanation: Explanation
     solutions: Solutions
     emotion_analysis: EmotionAnalysis
-    Incident: Incident  
+    Incident: Incident
+    nicknames: Nickname
 
 class STTModel:
     def __init__(self, api_key):
