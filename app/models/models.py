@@ -19,14 +19,6 @@ from langchain_core.documents import Document
 load_dotenv()
 api_key = os.getenv('OPENAI_API_KEY')
 
-# class Document:
-#     def __init__(self, page_content, metadata):
-#         self.page_content = page_content
-#         self.metadata = metadata
-
-#     def __repr__(self):
-#         return f"Document(page_content='{self.page_content[:30]}...', metadata={self.metadata})"
-
 class EmotionReportModel:
     def __init__(self, api_key):
         self.client = AsyncOpenAI(api_key=api_key)
