@@ -1,6 +1,6 @@
 # 📖 갈등 판결 서비스 '몇대몇'
 
-![image](https://github.com/user-attachments/assets/6738ac17-a254-4779-a95a-89fd6222e193)
+![Readme](https://github.com/user-attachments/assets/d0dc47aa-9c6c-4858-a102-6f4dadae7d83)
 
 - 배포 URL : https://www.otoo.kr/
 - Test ID : otoo
