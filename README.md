@@ -1,4 +1,9 @@
-### 설치 및 실행
+# 📖 갈등 판결 서비스 '몇대몇' (FastAPI)
+
+이 프로젝트는 FastAPI를 사용하여 다양한 모델을 구현한 프로젝트 입니다. <br/>
+주요 기능으로는 감정 분석, Q&A 생성, 채팅 봇, OCR 처리 등이 포함됩니다.
+
+# 설치 및 실행
 의존성 설치
 ```
 pip install --no-cache-dir -r requirements.txt
@@ -20,7 +25,7 @@ DB_PASSWORD=
 uvicorn main:app --reload --port 8001
 ```
 
-### 프로젝트 구조
+# 프로젝트 구조
 C:.<br/>
 ├───.github<br/>
 │   ├───ISSUE_TEMPLATE<br/>
@@ -41,7 +46,7 @@ C:.<br/>
 └───__pycache__<br/>
 
 
-### 주요기능 및 예제
+# 주요기능 및 예제
 
 1. **EmotionReportModel**: 다양한 감정 상태를 분석하여 보고서를 생성합니다.
 2. **QnaModel**: 사용자 질문에 대한 답변을 제공하고 MongoDB에서 관련 데이터를 검색합니다.
