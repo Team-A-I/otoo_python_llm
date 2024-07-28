@@ -33,18 +33,10 @@ C:.<br/>
 ├───.idea<br/>
 ├───app<br/>
 │   ├───api<br/>
-│   │   └───__pycache__<br/>
 │   ├───db<br/>
-│   │   └───__pycache__<br/>
 │   ├───models<br/>
-│   │   └───__pycache__<br/>
 │   ├───modules<br/>
-│   │   └───__pycache__<br/>
 │   ├───prompts<br/>
-│   │   └───__pycache__<br/>
-│   └───__pycache__<br/>
-└───__pycache__<br/>
-
 
 # 주요기능 및 예제
 
