@@ -6,3 +6,4 @@ class messagesRequest(BaseModel):
 
 async def generate_messages_response(client, messages_request: messagesRequest) -> str:
     return await client.generate_messages_response(messages_request)
+
