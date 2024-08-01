@@ -69,12 +69,13 @@ class QnaModel:
 
             documents = list(collection.find({}, {'_id': 0, 'content': 1, 'embedding': 1}))
             documents = [Document(page_content=doc["content"], embedding=doc["embedding"]) for doc in documents]
+
             # FAISS에 임베딩 데이터 로드
             embeddings = OpenAIEmbeddings()
             vectorstore = FAISS.from_documents(
                 documents=documents,
                 embedding=embeddings
-)
+            )
 
             # 검색기 생성
             retriever = vectorstore.as_retriever()
@@ -272,7 +273,7 @@ class OcrModel:
         
         analysis_result = await self.analyze(text_data, type)
         return analysis_result
-    
+
 
 emotion_report_model = EmotionReportModel(api_key=api_key)
 chatbot_model = ChatbotModel(api_key=api_key)
