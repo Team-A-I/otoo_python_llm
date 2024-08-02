@@ -1,27 +1,33 @@
-from openai import AsyncOpenAI
-import os
+import google.generativeai as genai
+from pydantic import BaseModel
+from typing import List, Dict
 from fastapi import HTTPException
+import json
+import re
+from dotenv import load_dotenv
+import os
 from db.db_util import get_model_name
 from prompts.prompts import conflict_prompt, love_prompt, friendship_prompt, emotion_report_prompt, chatbot_prompt_mode_2, chatbot_prompt_default, qna_prompt
 from modules.module_pre import clean_chat
-from dotenv import load_dotenv
 from models.image_processor import ImageProcessor
 from langchain_community.vectorstores import FAISS
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.prompts import PromptTemplate
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from pymongo import MongoClient
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
 
 
 load_dotenv()
-api_key = os.getenv('OPENAI_API_KEY')
+GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+
+# Google Gemini API 설정
+genai.configure(api_key=GOOGLE_API_KEY)
 
 class EmotionReportModel:
     def __init__(self, api_key):
-        self.client = AsyncOpenAI(api_key=api_key)
+        self.api_key = api_key
 
     async def initialize(self):
         self.model_name = await get_model_name()
@@ -34,25 +40,24 @@ class EmotionReportModel:
             embeddings = OpenAIEmbeddings()
             loaded_vectorstore = FAISS.load_local("faiss/emotion_index", embeddings, allow_dangerous_deserialization=True)
             retriever = loaded_vectorstore.as_retriever()
-            llm = ChatOpenAI(model_name="gpt-4o", temperature=0)
             prompt = PromptTemplate.from_template(emotion_report_prompt)
             # 체인 설정
             chain = (
                 {"context": retriever, "question": RunnablePassthrough()}
                 | prompt
-                | llm
+                | genai.GenerativeModel(self.model_name)
                 | StrOutputParser()
             )
             question = messages
             response = chain.invoke(question)
         except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Error calling OpenAI API: {str(e)}")
+            raise HTTPException(status_code=500, detail=f"Error calling Google Gemini API: {str(e)}")
 
         return response
 
 class QnaModel:
     def __init__(self, api_key):
-        self.client = AsyncOpenAI(api_key=api_key)
+        self.api_key = api_key
 
     async def initialize(self):
         self.model_name = await get_model_name()
@@ -81,14 +86,13 @@ class QnaModel:
             retriever = vectorstore.as_retriever()
        
             # LLM 및 프롬프트 템플릿 초기화
-            llm = ChatOpenAI(model_name="gpt-4o", temperature=0)
             prompt = PromptTemplate.from_template(qna_prompt)
            
             # 체인 설정: 검색기, LLM, 출력 파서
             chain = (
                 {"context": retriever, "question": RunnablePassthrough()}
                 | prompt
-                | llm
+                | genai.GenerativeModel(self.model_name)
                 | StrOutputParser()
             )
             
@@ -102,7 +106,7 @@ class QnaModel:
     
 class QnAEditorModel:
     def __init__(self, api_key):
-        self.client = AsyncOpenAI(api_key=api_key)
+        self.api_key = api_key
     
     async def initialize(self):
         self.model_name = await get_model_name()
@@ -130,13 +134,13 @@ class QnAEditorModel:
             collection.insert_many(embedded_docs)
                         
         except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Error calling OpenAI API: {str(e)}")
+            raise HTTPException(status_code=500, detail=f"Error calling Google Gemini API: {str(e)}")
 
         return HTTPException(status_code=200, detail="QnA 데이터베이스 업데이트 완료")
 
 class ChatbotModel:
     def __init__(self, api_key):
-        self.client = AsyncOpenAI(api_key=api_key)
+        self.api_key = api_key
 
     async def initialize(self):
         self.model_name = await get_model_name()
@@ -153,8 +157,8 @@ class ChatbotModel:
 
         messages = [
             {
-                "role": "system",
-                "content": prompt
+                "role": "user",
+                "parts": [prompt]
             }
         ]
 
@@ -163,32 +167,25 @@ class ChatbotModel:
             if role == 'user':
                 messages.append({
                     "role": "user",
-                    "content": content
+                    "parts": [content]
                 })
             elif role == 'assistant':
                 messages.append({
                     "role": "assistant",
-                    "content": content
+                    "parts": [content]
                 })
 
         try:
-            completion = await self.client.chat.completions.create(
-                model=self.model_name,
-                messages=messages,
-                temperature=0.6,
-                max_tokens=256,
-                top_p=0.5,
-                frequency_penalty=0,
-                presence_penalty=0
-            )
+            model = genai.GenerativeModel(self.model_name)
+            response = model.generate_content(messages)
         except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Error calling OpenAI API: {str(e)}")
-        content_value = completion.choices[0].message.content
+            raise HTTPException(status_code=500, detail=f"Error calling Google Gemini API: {str(e)}")
+        content_value = response.text.strip()
         return content_value
     
 class AnalysisModel:
     def __init__(self, api_key):
-        self.client = AsyncOpenAI(api_key=api_key)
+        self.api_key = api_key
 
     async def initialize(self):
         self.model_name = await get_model_name()
@@ -210,21 +207,21 @@ class AnalysisModel:
             f"지원하지 않는 데이터 형식: {str(e)}"
 
         messages = [
-            {"role": "system", "content": prompt},
-            {"role": "user", "content": text}
+            {"role": "system", "parts": [prompt]},
+            {"role": "user", "parts": [text]}
         ]
 
-        response = await self.client.chat.completions.create(
-            model=self.model_name,
-            messages=messages,
-            temperature=0.7
-        )
+        try:
+            model = genai.GenerativeModel(self.model_name)
+            response = model.generate_content(messages)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error calling Google Gemini API: {str(e)}")
         
-        return response.choices[0].message.content.strip()
+        return response.text.strip()
     
 class OcrModel:
     def __init__(self, api_key):
-        self.client = AsyncOpenAI(api_key=api_key)
+        self.api_key = api_key
         self.image_processor = ImageProcessor()
 
     async def initialize(self):
@@ -247,17 +244,17 @@ class OcrModel:
             raise HTTPException(status_code=400, detail="Invalid analysis data")
 
         messages = [
-            {"role": "system", "content": prompt},
-            {"role": "user", "content": text}
+            {"role": "system", "parts": [prompt]},
+            {"role": "user", "parts": [text]}
         ]
 
-        response = await self.client.chat.completions.create(
-            model=self.model_name,
-            messages=messages,
-            temperature=0.7
-        )
+        try:
+            model = genai.GenerativeModel(self.model_name)
+            response = model.generate_content(messages)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error calling Google Gemini API: {str(e)}")
 
-        return response.choices[0].message.content.strip()
+        return response.text.strip()
     
     async def process_uploaded_files(self, files, type):
         results = await self.image_processor.process_images(files)
@@ -275,12 +272,12 @@ class OcrModel:
         return analysis_result
 
 
-emotion_report_model = EmotionReportModel(api_key=api_key)
-chatbot_model = ChatbotModel(api_key=api_key)
-analysis_model = AnalysisModel(api_key=api_key)
-ocr_model = OcrModel(api_key=api_key)
-qna_model = QnaModel(api_key=api_key)
-qna_editor_model = QnAEditorModel(api_key=api_key)
+emotion_report_model = EmotionReportModel(api_key=GOOGLE_API_KEY)
+chatbot_model = ChatbotModel(api_key=GOOGLE_API_KEY)
+analysis_model = AnalysisModel(api_key=GOOGLE_API_KEY)
+ocr_model = OcrModel(api_key=GOOGLE_API_KEY)
+qna_model = QnaModel(api_key=GOOGLE_API_KEY)
+qna_editor_model = QnAEditorModel(api_key=GOOGLE_API_KEY)
 
 def get_emotion_report_model():
     return emotion_report_model
@@ -304,5 +301,3 @@ def get_qna_model():
 
 def get_qna_editor_model():
     return qna_editor_model
-    
-

@@ -1,17 +1,23 @@
+from prompts.prompts import single_speaker_prompt, multi_speaker_prompt
+
+import google.generativeai as genai
 from pydantic import BaseModel
 from typing import List, Dict
-from prompts.prompts import single_speaker_prompt, multi_speaker_prompt
-from openai import AsyncOpenAI
-from dotenv import load_dotenv
-import os
 from fastapi import HTTPException
-from db.db_util import get_model_name
 import json
 import re
+from dotenv import load_dotenv
+import os
+from db.db_util import get_model_name
 
+# 환경 변수 로드
 load_dotenv()
-api_key = os.getenv('OPENAI_API_KEY')
+GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 
+# Google Gemini API 설정
+genai.configure(api_key=GOOGLE_API_KEY)
+
+# 데이터 모델 정의
 class Utterance(BaseModel):
     start_at: int
     duration: int
@@ -62,8 +68,8 @@ class Incident(BaseModel):
     ending: IncidentStage
 
 class Nickname(BaseModel):
-    nickname_a : str
-    nickname_b : str
+    nickname_a: str
+    nickname_b: str
 
 class AnalysisResponse(BaseModel):
     situation_analysis: Analysis
@@ -75,9 +81,10 @@ class AnalysisResponse(BaseModel):
     Incident: Incident
     nicknames: Nickname
 
+# STTModel 클래스 정의
 class STTModel:
     def __init__(self, api_key):
-        self.client = AsyncOpenAI(api_key=api_key)
+        self.api_key = api_key
         self.model_name = None
 
     async def initialize(self):
@@ -93,30 +100,26 @@ class STTModel:
         else:
             prompt = multi_speaker_prompt
 
-        messages = [{"role": "system", "content": prompt}]
+        messages = [{"role": "user", "parts": prompt}]
         
         for utterance in response.results.utterances:
             if len(speakers) == 1:
-                messages.append({"role": "user", "content": f"I: {utterance.msg}"})
+                messages.append({"role": "user", "parts": f"I: {utterance.msg}"})
             else:
                 if utterance.spk == 0:
-                    messages.append({"role": "user", "content": f"A: {utterance.msg}"})
+                    messages.append({"role": "user", "parts": f"A: {utterance.msg}"})
                 else:
-                    messages.append({"role": "user", "content": f"B: {utterance.msg}"})
+                    messages.append({"role": "user", "parts": f"B: {utterance.msg}"})
         
         try:
-            completion = await self.client.chat.completions.create(
-                model=self.model_name,
-                messages=messages,
-                temperature=0.7,
-                max_tokens=4000
-            )
+            model = genai.GenerativeModel(self.model_name)
+            response = model.generate_content(messages)
         except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Error calling OpenAI API: {str(e)}")
+            raise HTTPException(status_code=500, detail=f"Error calling Google Gemini API: {str(e)}")
 
-        content = completion.choices[0].message.content.strip()
+        content = response.text.strip()
 
-        # Remove any leading/trailing markdown code fences
+        # JSON 코드 블록 제거
         content = re.sub(r'^```json\n|```$', '', content)
 
         try:
@@ -126,7 +129,9 @@ class STTModel:
         
         return AnalysisResponse(**response_json)
 
-stt_model = STTModel(api_key=api_key)
+# STT 모델 인스턴스 생성
+stt_model = STTModel(api_key=GOOGLE_API_KEY)
 
+# STT 모델 인스턴스 반환 함수
 def get_stt_model():
     return stt_model
